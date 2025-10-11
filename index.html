@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Grow and Sell!</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <link rel="stylesheet" href="style.css" />
+
+  <div id="game">
+    <h1>🌿 Вырасти и продай</h1>
+    <div id="moneyBar">
+  💰 Шакили: <span id="money">0</span>
+</div>
+
+<!-- Стартовый экран -->
+<div id="start-screen">
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/XvxgsZ5n/Chat-GPT-Image-5-2025-22-52-40.png" alt="." class="logo">
+        <p class="press-text">Нажмите в любом месте чтобы продолжить</p>
+    </div>
+</div>
+
+<!-- Основной игровой контейнер -->
+<div id="game-container">
+    <!-- Здесь твой игровой код -->
+</div>
+
+<div id="halloweenBanner">
+  🎃 <b>Halloween Event!</b>  
+  👻 Хэлу-коинов:<span id="hallowCoins">0</span> 
+</div>
+
+<div id="halloweenShop" class="hidden">
+  <h3>🕸️ Хэллоуин-шоп</h3>
+  <button onclick="buyBoost('speed', 600000, 500)">⚡ Ускорение роста (500👻)</button>
+  <button onclick="buyBoost('money', 600000, 700)">💰 Удвоение прибыли (700👻)</button>
+  <button onclick="openLuckyPack()">🎁 Lucky Pack (1000👻)</button>
+  <br><br>
+  <button onclick="toggleHalloweenShop()">❌ Закрыть</button>
+</div>
+
+<button onclick="toggleHalloweenShop()" id="halloweenButton">🎃 Halloween Shop</button>
+
+
+
+
+
+<audio id="backgroundMusic" loop>
+  <source src="https://dl.dropboxusercontent.com/s/bjxm9kwaciies3onzh0ut/Grow-A-Garden-Classic-Easter-Theme-Reupload-1.mp3
+" type="audio/">
+  Ваш браузер не поддерживает аудио.
+</audio>
+
+<div id="statsTab" class="tab" style="display:none;">
+  <h2>📊 Статистика</h2>
+  <p>🌱 Посажено: <span id="statsPlanted">0</span></p>
+  <p>🌾 Собрано: <span id="statsHarvested">0</span></p>
+  <p>💰 Заработано: <span id="statsEarned">0</span></p>
+  <button onclick="closeTab('statsTab')">Закрыть</button>
+</div>
+
+
+    <div id="upgradeShop">
+      <h3>🔧 Улучшения</h3>
+      <button onclick="buySlot()">Добавить грядку (15💰) — <span id="slotCount"></span></button>
+      <button onclick="buyWatering()">Поливалка 🌧️ (10💰)</button>
+    </div>
+
+    <button onclick="toggleShop()">🛒 Открыть магазин</button>
+
+<div id="plantShop" class="hidden">
+  <h3>🌱 Магазин растений <button onclick="toggleShop()">❌</button></h3>
+  <div id="seedButtons" class="shop-list"></div>
+</div>
+
+
+<button onclick="openTab('skins')">🎨 Скины</button>
+
+<div id="shopTab" class="tab" style="display:none;">.</div>
+<div id="inventoryTab" class="tab" style="display:none;">.</div>
+
+<div id="skinsTab" class="tab" style="display:none;">
+  <h2>Выбор скина грядки</h2>
+  <button onclick="setSkin('default')">Обычный</button>
+  <button onclick="setSkin('night')">🌙 Ночной</button>
+  <br><br>
+  <button onclick="closeSkinsTab()">Закрыть</button>
+</div>
+
+    <h3>🌱 Грядки</h3>
+    <div id="garden"></div>
+  </div>
+
+  <div id="rouletteBox">
+  <h3>🎰 Рулетка</h3>
+  <div id="rouletteText">Проверь свою удачу!</div>
+  <button onclick="spinRoulette()">🎲 Крутить (5 000💰)</button>
+</div>
+
+<div id="redeemSection">
+  <h3>🎁 Коды</h3>
+  <input type="text" id="redeemInput" placeholder="Введите код">
+  <button onclick="redeemCode()">Активировать</button>
+  <p id="redeemMessage"></p>
+</div>
+
+
+<button onclick="tryRebirth()">🔄 Перерождение</button>
+
+
+  <a href="https://t.me/+YaDJr4kBFOUyYjEy" target="_blank" class="tg-btn">Наш Telegram 📲</a>
+
+</div>
+
+  <script src="game.js"></script>
+
+<div id="uiButtons">
+  <button id="harvestButton" onclick="harvestAll()">Собрать всё 🌾</button>
+  <button id="shovelButton" onclick="toggleShovelMode()">🪓</button>
+</div>
+
+<div id="vignette"></div>
+
+
+<!-- Кнопка лопатки -->
+<button id="shovelButton" onclick="toggleShovelMode()">🪓</button>
+
+<!-- Кнопка отмены (появляется только при активной лопатке) -->
+<button id="cancelShovelButton" onclick="toggleShovelMode()">❌</button>
+
+
+<div id="recordsScreen" style="display:none; padding: 20px;">
+  <h2>🏆 Таблица рекордов</h2>
+  <p>🔝 Лучшая сумма шакилей: <span id="bestMoneyDisplay">0</span> 💰</p>
+  <button onclick="hideRecords()">⬅️ Назад</button>
+</div>
+
+<p id="recordUpdateTimer" style="font-size: 12px; color: gray; margin-top: 10px;">
+  V116 <span id="updateTime"></span>
+</p>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
