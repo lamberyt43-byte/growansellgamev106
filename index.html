@@ -1526,17 +1526,39 @@ const rarityOrder = {
   мифическое: 5,
 };
 
-// Список кодов
+// 🎁 Список кодов
+// Тип может быть: "money" или "plant"
 const redeemCodes = {
-  "ECLIPSEEVENTISHERE": 50000000000,
-  "GROWANDSELL2025": 50000000000,
-  "ADMINABUSE": 10000000000, 
-  "1BILLION": 1,
-  "aunxzzISHERE": 50000000000,// код -> награда
+  "GSL-COMM-BOX": { type: "money", value: 3000000000 },
+  "MYST-FARM-42Q": { type: "money", value: 100 },
+  
+
+  // Пример кода, который даёт растение:
+  "XST-RBOW-LT": {
+    type: "plant",
+    value: {
+      name: "Спелый мандарин",
+      emoji: "🍊",
+      price: 50000000000,
+      growTime: 200000,
+      rarity: "призматическое"
+    },
+    "GSL-BOX-SEED": {
+    type: "plant",
+    value: {
+      name: "Раффлезия",
+      emoji: "🌸",
+      price: 5000000000,
+      growTime: 200000,
+      rarity: "призматическое"
+    }
+  }
 };
 
-let usedCodes = []; // Сохраняем активированные коды
+// Загружаем использованные коды (чтобы не повторялись после перезахода)
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
 
+// 💬 Активация кода
 function redeemCode() {
   const input = document.getElementById("redeemInput").value.trim().toUpperCase();
   const message = document.getElementById("redeemMessage");
@@ -1547,24 +1569,49 @@ function redeemCode() {
   }
 
   if (usedCodes.includes(input)) {
-    message.textContent = "⚠️ Этот код уже активирован!";
+    message.textContent = "⚠️ Этот код уже был активирован!";
     return;
   }
 
-  if (redeemCodes[input]) {
-    money += redeemCodes[input];
-    usedCodes.push(input);
-    message.textContent = `✅ Код активирован! Вы получили ${redeemCodes[input]} 💰`;
-    updateMoney();
-  } else {
+  const codeData = redeemCodes[input];
+
+  if (!codeData) {
     message.textContent = "❌ Неверный код!";
+    return;
   }
+
+  // 💰 Если код — на деньги
+  if (codeData.type === "money") {
+    money += codeData.value;
+    message.textContent = `✅ Код активирован! Вы получили ${codeData.value.toLocaleString()} 💰`;
+  }
+
+  // 🌱 Если код — на растение
+  else if (codeData.type === "plant") {
+    const plantData = codeData.value;
+
+    // Находим пустую грядку
+    const emptyIndex = garden.findIndex(p => !p);
+    if (emptyIndex === -1) {
+      message.textContent = "❌ Нет свободных грядок для посадки растения!";
+    } else {
+      garden[emptyIndex] = {
+        ...plantData,
+        start: Date.now(),
+        time: plantData.growTime,
+        ready: false
+      };
+      growPlant(emptyIndex);
+      message.textContent = `✅ Вы получили растение: ${plantData.emoji} ${plantData.name}!`;
+    }
+  }
+
+  // ✅ Сохраняем результат
+  usedCodes.push(input);
+  localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+  save(); // сохраняем прогресс
+  updateUI();
 }
-
-
-
-seeds.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
-
 function save() {
   localStorage.setItem("money", money);
   localStorage.setItem("slots", slots);
@@ -2055,4 +2102,5 @@ loadAdminMessage();
   </script>
 </body>
 </html>
+
 
