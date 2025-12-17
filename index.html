@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🌾 Вырасти и продай!</title>
+
+  <style>
+    /* Фон игры (изначально размытый) */
+#game-container {
+    filter: blur(8px);
+    transition: filter 0.5s ease;
+}
+
+/* Стартовый экран */
+#start-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.logo-container {
+    text-align: center;
+    color: white;
+}
+
+.logo {
+    max-width: 400px;
+}
+
+.press-text {
+    font-size: 24px;
+    margin-top: 20px;
+    animation: blink 3s infinite;
+}
+
+/* Мигание текста */
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0.3; }
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f3f0e5;
+  color: #333;
+  text-align: center;
+  padding: 20px;
+}
+#frozenBanner {
+  background: linear-gradient(90deg, #004b8d, #00cfff, #004b8d);
+  color: #e3f6ff;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px auto;
+  width: 80%;
+  animation: frozenGlow 4s infinite;
+  font-weight: bold;
+  box-shadow: 0 0 10px #9ee8ff;
+}
+
+@keyframes frozenGlow {
+  0%,100% { box-shadow: 0 0 15px #b3ffff; }
+  50% { box-shadow: 0 0 30px #00bfff; }
+}
+
+#frozenButton {
+  background: linear-gradient(90deg, #0088ff, #00eaff);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  animation: pulseFrozen 2s infinite;
+  box-shadow: 0 0 10px #b8f4ff;
+}
+
+@keyframes pulseFrozen {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+
+#frozenShop {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  background: rgba(0,40,80,0.95);
+  color: #e0faff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0,170,255,0.9);
+  z-index: 1000;
+}
+
+
+
+#pot {
+  font-size: 24px;
+  line-height: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+
+
+.tg-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #0088cc;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.tg-btn:hover {
+  background: #006699;
+}
+
+
+
+
+
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 2px); }
+  75% { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.shake {
+  animation: shake 0.1s infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#plantShop {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  max-height: 70vh;
+  background:#fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  z-index: 999;
+}
+
+#plantShop h3 {
+  margin-top: 0;
+}
+
+.shop-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.shop-list button {
+  width: 110px;
+  margin: 6px;
+  font-size: 14px;
+}
+
+.hidden {
+  display: none;
+}
+
+
+#harvestButton {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffb74d;
+  color: #333;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.3s;
+}
+
+#harvestButton:hover {
+  background-color: #ffa000;
+}
+
+
+#moneyBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #c5e1a5;
+  color:  #333;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+
+#game {
+  max-width: 500px;
+  margin: auto;
+  background: #fff8f0;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background: #8bc34a;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background:  #689f38;
+}
+
+#garden {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.plot {
+  width: 80px;
+  height: 80px;
+  margin: 5px;
+  background:#c8e6c9;
+  border: 2px dashed #558b2f;
+  border-radius: 10px;
+  position: relative;
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plot.ready {
+  background:#fff59d;
+}
+
+.tooltip {
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.7);
+  border-radius: 0 0 10px 10px;
+}
+
+@keyframes growPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.plot.growing {
+  animation: growPulse 1.5s infinite;
+}
+  </style>
+
+  
+</head>
+<body>
+  <link rel="stylesheet" href="style.css" />
+
+  <div id="game">
+    <h1>🌿 Вырасти и продай</h1>
+    <div id="moneyBar">
+  💰 Шакили: <span id="money">0</span>
+</div>
+
+<!-- Стартовый экран -->
+<div id="start-screen">
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/7ZBVdYZs/20251108-1902-Logotip-Frozen-Miracle-simple-compose-01k9hwbay2fykthmtd0jyaprhh-removebg-preview.png" alt="." class="logo">
+        <p class="press-text">Нажмите в любом месте чтобы продолжить</p>
+    </div>
+</div>
+
+<!-- Основной игровой контейнер -->
+<div id="game-container">
+    <!-- Здесь твой игровой код -->
+</div>
+<div id="frozenBanner">  
+  ❄️ <b>Frozen Miracle Event!</b>  
+  🧊 Кристаллы: <span id="frozenCrystals">0</span>  
+</div>  
+
+<div id="frozenShop" class="hidden">  
+  <h3>🎄 Магазин FROZEN</h3>  
+  <button onclick="openFrozenPack()">🎁 Frozen Pack (10 000🧊)</button>  
+  <button onclick="openClassicFrozenPack()">💰 Classic Frozen Pack (1 000🧊)</button>  
+  <br><br>  
+  <button onclick="toggleFrozenShop()">❌ Закрыть</button>  
+</div>  
+
+<button onclick="toggleFrozenShop()" id="frozenButton">❄️ Frozen Shop</button>
+
+
+
+
+<audio id="backgroundMusic" loop>
+  <source src="https://dl.dropboxusercontent.com/s/bjxm9kwaciies3onzh0ut/Grow-A-Garden-Classic-Easter-Theme-Reupload-1.mp3
+" type="audio/">
+  Ваш браузер не поддерживает аудио.
+</audio>
+
+<div id="statsTab" class="tab" style="display:none;">
+  <h2>📊 Статистика</h2>
+  <p>🌱 Посажено: <span id="statsPlanted">0</span></p>
+  <p>🌾 Собрано: <span id="statsHarvested">0</span></p>
+  <p>💰 Заработано: <span id="statsEarned">0</span></p>
+  <button onclick="closeTab('statsTab')">Закрыть</button>
+</div>
+
+
+    <div id="upgradeShop">
+      <h3>🔧 Улучшения</h3>
+      <button onclick="buySlot()">Добавить грядку (15💰) — <span id="slotCount"></span></button>
+      <button onclick="buyWatering()">Поливалка 🌧️ (10💰)</button>
+    </div>
+
+    <button onclick="toggleShop()">🛒 Открыть магазин</button>
+
+<div id="plantShop" class="hidden">
+  <h3>🌱 Магазин растений <button onclick="toggleShop()">❌</button></h3>
+  <div id="seedButtons" class="shop-list"></div>
+</div>
+
+
+    <h3>🌱 Грядки</h3>
+    <div id="garden"></div>
+  </div>
+
+  <div id="rouletteBox">
+  <h3>🎰 Рулетка</h3>
+  <div id="rouletteText">Проверь свою удачу!</div>
+  <button onclick="spinRoulette()">🎲 Крутить (5 000💰)</button>
+</div>
+
+<div id="redeemSection">
+  <h3>🎁 Коды</h3>
+  <input type="text" id="redeemInput" placeholder="Введите код">
+  <button onclick="redeemCode()">Активировать</button>
+  <p id="redeemMessage"></p>
+</div>
+
+
+<button onclick="tryRebirth()">🔄 Перерождение</button>
+
+
+  <a href="https://t.me/+YaDJr4kBFOUyYjEy" target="_blank" class="tg-btn">Наш Telegram 📲</a>
+
+</div>
+
+  <script src="game.js"></script>
+
+  <button id="harvestButton" onclick="harvestAll()">Собрать всё 🌾</button>
+
+<div id="recordsScreen" style="display:none; padding: 20px;">
+  <h2>🏆 Таблица рекордов</h2>
+  <p>🔝 Лучшая сумма шакилей: <span id="bestMoneyDisplay">0</span> 💰</p>
+  <button onclick="hideRecords()">⬅️ Назад</button>
+</div>
+
+<p id="recordUpdateTimer" style="font-size: 12px; color: gray; margin-top: 10px;">
+  V116 <span id="updateTime"></span>
+</p>
+
+  <script>
+    let money = parseInt(localStorage.getItem("money")) || 20;
+let slots = parseInt(localStorage.getItem("slots")) || 3;
+let watering = parseInt(localStorage.getItem("watering")) || 0;
+let garden = JSON.parse(localStorage.getItem("garden")) || [];
+let displayedMoney = money;
+let bestMoney = parseInt(localStorage.getItem("bestMoney")) || 0;
+let rouletteSpinsToday =
+  parseInt(localStorage.getItem("rouletteSpinsToday")) || 0;
+let lastRouletteDate = localStorage.getItem("lastRouletteDate") || "";
+let currentPlotSkin = localStorage.getItem("currentPlotSkin") || "default";
+let stats = { planted: 0, harvested: 0, earned: 0 };
+
+function updateStatsUI() {
+  document.getElementById("statsPlanted").textContent = stats.planted;
+  document.getElementById("statsHarvested").textContent = stats.harvested;
+  document.getElementById("statsEarned").textContent = stats.earned;
+}
+
+function setSkin(skin) {
+  currentPlotSkin = skin;
+  localStorage.setItem("currentPlotSkin", currentPlotSkin);
+  updateUI();
+}
+
+
+const music = document.getElementById("backgroundMusic");
+
+// Включить музыку
+music.play();
+
+// Поставить на паузу
+music.pause();
+
+const maxSlots = 500; // максимум слотов
+
+const seeds = [
+  { name: "Лук", emoji: "🧅", price: 2, growTime: 3000, rarity: "стартовое",  },
+  { name: "Морковь", emoji: "🥕", price: 6, growTime: 6000, rarity: "редкое", favorite: false
+ },
+
+  {
+    name: "Токсичный лимон",
+    emoji: "☣️",
+    price: 8,
+    growTime: 6000,
+    rarity: "редкое",
+    favorite: false
+
+  },
+
+  {
+    name: "Сахарная свекла",
+    emoji: "🍭🍠",
+    price: 10,
+    growTime: 8000,
+    rarity: "редкое",
+    favorite: false
+
+  },
+  {
+    name: "Желейный арбуз",
+    emoji: "🍉🧡",
+    price: 15,
+    growTime: 10000,
+    rarity: "редкое",
+    favorite: false
+
+  },
+
+  {
+    name: "Паприка-пушка",
+    emoji: "🌶️💥",
+    price: 19,
+    growTime: 11000,
+    rarity: "редкое",
+    favorite: false
+
+  },
+  {
+    name: "Клубника с неба",
+    emoji: "🍓☁️",
+    price: 23,
+    growTime: 12000,
+    rarity: "редкое",
+    favorite: false
+
+  },
+
+
+  {
+    name: "Звёздный помидор",
+    emoji: "🍅🌠",
+    price: 30,
+    growTime: 13500,
+    rarity: "эпическое",
+    favorite: false
+
+  },
+
+  {
+    name: "Золотой банан",
+    emoji: "🍌✨",
+    price: 35,
+    growTime: 14500,
+    rarity: "эпическое",
+    favorite: false
+
+  },
+
+  {
+    name: "Вулканическая груша",
+    emoji: "🍐🌋",
+    price: 40,
+    growTime: 15500,
+    rarity: "эпическое",
+    favorite: false
+
+  },
+
+  {
+    name: "Неоновый апельсин",
+    emoji: "🍊💡",
+    price: 50,
+    growTime: 17000,
+    rarity: "легендарное",
+    favorite: false
+
+  },
+
+  {
+    name: "Солнечный кокос",
+    emoji: "🥥☀️",
+    price: 55,
+    growTime: 18000,
+    rarity: "легендарное",
+    favorite: false
+
+  },
+
+
+  {
+    name: "Гравитационная капуста",
+    emoji: "🥬🌌",
+    price: 65,
+    growTime: 19500,
+    rarity: "легендарное",
+    favorite: false
+
+  },
+
+  {
+    name: "Грозовой мандарин",
+    emoji: "🍊🌩️",
+    price: 70,
+    growTime: 20500,
+    rarity: "легендарное",
+    favorite: false
+
+  },
+
+
+  {
+    name: "Магнитная морковка",
+    emoji: "🥕🧲",
+    price: 550,
+    growTime: 23000,
+    rarity: "мифическое",
+    favorite: false
+
+  },
+  {
+    name: "Плод портала",
+    emoji: "🌀🍒",
+    price: 850,
+    growTime: 24000,
+    rarity: "мифическое",
+    favorite: false
+
+  },
+  {
+    name: "Растение вечности",
+    emoji: "♾️🌿",
+    price: 999,
+    growTime: 25000,
+    rarity: "призматическое",
+    favorite: false
+
+  },
+ 
+  {
+    name: "Горящая голубика",
+    emoji: "🔥🫐",
+    price: 1500,
+    growTime: 50000,
+    rarity: "призматическое",
+    favorite: false
+
+  },
+  {
+    name: "Слепая маракуйя",
+    emoji: "🥭👓",
+    price: 2222,
+    growTime: 70000,
+    rarity: "призматическое",
+    favorite: false
+
+  },
+  {
+    name: "Костяной абрикос ",
+    emoji: "🫐🦴",
+    price: 5000,
+    growTime: 1000000,
+    rarity: "призматическое",
+    favorite: false
+
+  },
+  {
+    name: "Неоновый банан",
+    emoji: "🌌🍌",
+    price: 1000000,
+    growTime: 10000000,
+    rarity: "призматичекое",
+    favorite: false
+
+  },
+    {
+    name: "Астральный лотос",
+    emoji: "🌠🪷",
+    price:  100000000,
+    growTime: 10000000,
+    rarity: "призматическое",
+    favorite: false
+
+  },
+  { 
+  name: "Космическое семя", 
+  emoji: "🌌", 
+  price: 230000000, 
+  growTime: 60000000,  // 60 секунд
+  rarity: "призматическое" 
+},
+{ 
+  name: "Медовый кактус", 
+  emoji: "🍯🌵", 
+  price: 900000000, 
+  growTime: 80000000,  // 60 секунд
+  rarity: "призматическое" 
+},
+  {
+    name: "Сверхнова",
+    emoji: "🎇🌌",
+    price: 1000000000,
+    growTime: 1000000000,
+    rarity: "",
+    favorite: false
+
+  },
+];
+
+const rarityOrder = {
+  обычное: 1,
+  редкое: 2,
+  эпическое: 3,
+  легендарное: 4,
+  мифическое: 5,
+};
+// 🎁 Список кодов
+// Тип может быть: "money" или "plant"
+const redeemCodes = {
+  "WDNSDAYADMINABUSE": { type: "money", value: 3000000000 },
+  "lol": { type: "money", value: 67 },
+  "NEWYEAR2026": { type: "money", value:   2600000000 },
+
+  // Пример кода, который даёт растение:
+ "AUNXZZPAVELABUSE": {
+    type: "plant",
+    value: {
+      name: "Кактус-фейверк",
+      emoji: "🎆🌵",
+      price: 50000000000,
+      growTime: 10000000,
+      rarity: "призматическое"
+    },
+ },
+  "YAY": {
+    type: "plant",
+    value: {
+      name: "Грозовой гриб",
+      emoji: "🌩️🍄",
+      price: 5000000000,
+      growTime:  10000000,
+      rarity: "призматическое"
+    }
+  }
+};
+
+// Загружаем использованные коды (чтобы не повторялись после перезахода)
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+
+// 💬 Активация кода
+function redeemCode() {
+  const input = document.getElementById("redeemInput").value.trim().toUpperCase();
+  const message = document.getElementById("redeemMessage");
+
+  if (!input) {
+    message.textContent = "❌ Введите код!";
+    return;
+  }
+
+  if (usedCodes.includes(input)) {
+    message.textContent = "⚠️ Этот код уже был активирован!";
+    return;
+  }
+
+  const codeData = redeemCodes[input];
+
+  if (!codeData) {
+    message.textContent = "❌ Неверный код!";
+    return;
+  }
+
+  // 💰 Если код — на деньги
+  if (codeData.type === "money") {
+    money += codeData.value;
+    message.textContent = `✅ Код активирован! Вы получили ${codeData.value.toLocaleString()} 💰`;
+  }
+
+  // 🌱 Если код — на растение
+  else if (codeData.type === "plant") {
+    const plantData = codeData.value;
+
+    // Находим пустую грядку
+    const emptyIndex = garden.findIndex(p => !p);
+    if (emptyIndex === -1) {
+      message.textContent = "❌ Нет свободных грядок для посадки растения!";
+    } else {
+      garden[emptyIndex] = {
+        ...plantData,
+        start: Date.now(),
+        time: plantData.growTime,
+        ready: false
+      };
+      growPlant(emptyIndex);
+      message.textContent = `✅ Вы получили растение: ${plantData.emoji} ${plantData.name}!`;
+    }
+  }
+
+  // ✅ Сохраняем результат
+  usedCodes.push(input);
+  localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+  save(); // сохраняем прогресс
+  updateUI();
+}
+
+function save() {
+  localStorage.setItem("money", money);
+  localStorage.setItem("slots", slots);
+  localStorage.setItem("watering", watering);
+  localStorage.setItem("garden", JSON.stringify(garden));
+  if (money > bestMoney) {
+    bestMoney = money;
+    localStorage.setItem("bestMoney", bestMoney);
+  }
+}
+
+function updateUI() {
+  document.getElementById("money").textContent = money;
+  renderGarden();
+}
+
+function renderGarden() {
+  const gardenDiv = document.getElementById("garden");
+  gardenDiv.innerHTML = "";
+
+  for (let i = 0; i < slots; i++) {
+    const plot = document.createElement("div");
+plot.className = "plot";
+if (currentPlotSkin === "night") {
+  plot.classList.add("night-skin");
+}
+
+
+
+    const plant = garden[i];
+    if (plant) {
+      plot.textContent = plant.emoji;
+      if (!plant.ready) {
+        plot.classList.add("growing");
+      }
+      if (plant.ready) {
+        plot.innerHTML += `<div class="tooltip">Готово! (${plant.name})</div>`;
+        plot.onclick = () => {
+         money += Math.floor(plant.price * 1.5 * getRebirthBonus());
+          garden[i] = null;
+          updateUI();
+          save();
+        };
+      } else {
+        const percent = Math.floor(
+          ((Date.now() - plant.start) / plant.time) * 100,
+        );
+        plot.innerHTML += `<div class="tooltip">${plant.rarity} • ${percent}%</div>`;
+      }
+    } else {
+      plot.onclick = () => plantSeed(i);
+    }
+
+    gardenDiv.appendChild(plot);
+  }
+}
+
+function renderSeeds() {
+  const rarityOrder = {
+    обычное: 1,
+    редкое: 2,
+    эпическое: 3,
+    легендарное: 4,
+    мифическое: 5,
+  };
+
+  seeds.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
+
+  const seedButtons = document.getElementById("seedButtons");
+  seedButtons.innerHTML = "";
+  seeds.forEach((seed, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = `${seed.emoji} ${seed.name} (${seed.price}💰)`;
+    btn.onclick = () => {
+      selectedSeed = index;
+      toggleShop();
+    };
+    seedButtons.appendChild(btn);
+  });
+}
+
+let selectedSeed = null;
+
+function plantSeed(i) {
+  if (selectedSeed === null) return;
+  const seed = seeds[selectedSeed];
+  if (money < seed.price) return;
+
+  money -= seed.price;
+  const time = seed.growTime - watering * 1000;
+  garden[i] = {
+    ...seed,
+    start: Date.now(),
+    time: time,
+    ready: false,
+  };
+
+  growPlant(i);
+  updateUI();
+  save();
+  updateQuestProgress(0, 1); // Посадка растения
+}
+
+function growPlant(i) {
+  const interval = setInterval(() => {
+    const plant = garden[i];
+    if (!plant) return clearInterval(interval);
+    if (Date.now() - plant.start >= plant.time) {
+    const timePassed = Date.now() - plant.start;
+const growTime = boosts.speed ? plant.time * 0.5 : plant.time; // ⚡ Ускоритель роста
+if (timePassed >= growTime) {
+// 🎨 Улучшенные мутации
+let roll = Math.random();
+if (roll < 0.05) { // 5% шанс на мутацию
+  let type;
+  if (roll < 0.03) { // 3% обычные редкие
+    type = ["silver", "gold"][Math.floor(Math.random() * 2)];
+  } else if (roll < 0.049) { // 1.9% шанс на радужное
+    type = "rainbow";
+  } else { // 0.1% супер-редкое
+    type = "cosmic";
+  }
+
+  if (type === "silver") {
+    plant.price *= 2;
+    plant.emoji = "🥈" + plant.emoji;
+    plant.mutation = "Серебряное 🌟 (×2 деньги)";
+  }
+  if (type === "gold") {
+    plant.price *= 5;
+    plant.emoji = "🥇" + plant.emoji;
+    plant.mutation = "Золотое 💰 (×5 деньги)";
+  }
+  if (type === "rainbow") {
+    plant.price *= 10;
+    plant.emoji = "🌈" + plant.emoji;
+    plant.mutation = "Радужное 🌈 (×10 деньги + +50% скорость роста)";
+    plant.growTime = Math.floor(plant.growTime * 0.5); // быстрее растёт
+  }
+  if (type === "cosmic") {
+    plant.price *= 50;
+    plant.emoji = "✨" + plant.emoji;
+    plant.mutation = "Космическое 🚀 (×50 деньги + моментальный рост)";
+    plant.ready = true; // сразу готово
+  }
+}
+
+  plant.ready = true;
+  updateUI();
+  save();
+  clearInterval(interval);
+}
+
+    }
+  }, 1000);
+}
+
+function buySlot() {
+  if (slots >= maxSlots) {
+    alert("Максимум грядок достигнут! 🌾");
+    return;
+  }
+
+  if (money >= 15) {
+    money -= 15;
+    slots += 1;
+    garden.push(null);
+    updateUI();
+    save();
+  } else {
+    alert("Недостаточно шакилей!");
+  }
+}
+
+function buyWatering() {
+  if (money >= 10) {
+    money -= 10;
+    watering += 1;
+    updateUI();
+    save();
+  }
+}
+
+function loadGrowth() {
+  garden.forEach((plant, i) => {
+    if (plant && !plant.ready) {
+      growPlant(i);
+    }
+  });
+}
+let frozenCrystals = parseInt(localStorage.getItem("frozenCrystals")) || 0;
+
+function saveFrozen() {
+  localStorage.setItem("frozenCrystals", frozenCrystals);
+  document.getElementById("frozenCrystals").textContent = frozenCrystals;
+}
+
+function toggleFrozenShop() {
+  document.getElementById("frozenShop").classList.toggle("hidden");
+}
+
+// каждые 30 сек добавляются кристаллы
+setInterval(() => {
+  const gain = Math.random() < 0.01 ? Math.floor(Math.random() * 4000 + 1000) : Math.floor(Math.random() * 500 + 200);
+  frozenCrystals += gain;
+  saveFrozen();
+
+  const msg = document.createElement("div");
+  msg.textContent = `🧊 Вы получили ${gain} кристаллов!`;
+  Object.assign(msg.style, {
+    position: "fixed", bottom: "40px", left: "50%", transform: "translateX(-50%)",
+    color: "#b8f4ff", fontWeight: "bold", background: "rgba(0,0,40,0.7)",
+    padding: "8px 14px", borderRadius: "10px", zIndex: 9999
+  });
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3000);
+}, 30000);
+
+saveFrozen();
+
+
+function animateMoney() {
+  const display = document.getElementById("money");
+  if (!display) return;
+
+  if (displayedMoney !== money) {
+    displayedMoney += (money - displayedMoney) * 0.1;
+    if (Math.abs(money - displayedMoney) < 0.5) {
+      displayedMoney = money;
+    }
+    display.textContent = Math.floor(displayedMoney);
+  }
+
+  requestAnimationFrame(animateMoney);
+}
+
+function harvestAll() {
+  let harvested = false;
+  for (let i = 0; i < garden.length; i++) {
+    const plant = garden[i];
+    if (plant && plant.ready) {
+     money += Math.floor(plant.price * 1.5 * getRebirthBonus());
+
+      garden[i] = null;
+      harvested = true;
+    }
+  }
+  if (harvested) {
+    updateUI();
+    save();
+  } else {
+    alert("Нет готовых растений! 🌱");
+  }
+  updateQuestProgress(1, 1); // Сбор урожая
+  let earned = Math.floor(plant.price * 1.5); // сколько заработал за растение
+  money += earned; // добавляем к деньгам
+  updateQuestProgress(4, earned); // прогресс квеста по заработанным деньгам
+}
+
+function toggleShop() {
+  const shop = document.getElementById("plantShop");
+  shop.classList.toggle("hidden");
+}
+
+function showRecords() {
+  document.getElementById("game").style.display = "none";
+  document.getElementById("recordsScreen").style.display = "block";
+  document.getElementById("bestMoneyDisplay").textContent = bestMoney;
+}
+
+function hideRecords() {
+  document.getElementById("recordsScreen").style.display = "none";
+  document.getElementById("game").style.display = "block";
+}
+
+function startRecordUpdateTimer(seconds) {
+  const timerDisplay = document.getElementById("updateTime");
+
+  function update() {
+    const min = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const sec = (seconds % 60).toString().padStart(2, "0");
+    timerDisplay.textContent = `${min}:${sec}`;
+
+    if (seconds <= 0) {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = "Обновление...";
+      // можешь тут вызвать обновление или скрыть
+    }
+
+    seconds--;
+  }
+
+  update();
+
+  const timerInterval = setInterval(update, 1000);
+}
+
+function spinRoulette() {
+  const today = new Date().toDateString();
+
+  // Сброс если новый день
+  if (lastRouletteDate !== today) {
+    rouletteSpinsToday = 0;
+    lastRouletteDate = today;
+    localStorage.setItem("lastRouletteDate", today);
+    localStorage.setItem("rouletteSpinsToday", rouletteSpinsToday);
+  }
+
+  // Проверка лимита
+  if (rouletteSpinsToday >= 3) {
+    alert("❌ Сегодня лимит прокруток исчерпан (3/3). Попробуй завтра!");
+    return;
+  }
+
+  if (money < 5_000) {
+    alert("Недостаточно Шакилей!");
+    return;
+  }
+
+  money -= 5_000;
+  save();
+  updateUI();
+
+  const text = document.getElementById("rouletteText");
+  text.textContent = "🎲 Рулетка крутится...";
+  text.classList.add("shake");
+
+  const rewards = [
+    { amount: 10_000, chance: 55 },
+    { amount: 50_000, chance: 50 },
+    { amount: 1_000_000, chance: 35 },
+    { amount: 10_000_000, chance: 20 },
+    { amount: 50_000_000, chance: 10 },
+    { amount: 100_000_000, chance: 7 },
+    { amount: 500_000_000, chance: 5 },
+    { amount: 1_000_000_000, chance: 1 },
+  ];
+
+  setTimeout(() => {
+    text.classList.remove("shake");
+
+    let roll = Math.random() * 100;
+    let sum = 0;
+    let reward = 0;
+    for (let r of rewards) {
+      sum += r.chance;
+      if (roll <= sum) {
+        reward = r.amount;
+        break;
+      }
+    }
+
+    text.textContent = `🎉 Ты выиграл ${reward.toLocaleString()} Шакилей!`;
+    money += reward;
+    save();
+    updateUI();
+
+    // Увеличиваем счетчик
+    rouletteSpinsToday++;
+    localStorage.setItem("rouletteSpinsToday", rouletteSpinsToday);
+  }, 2000);
+}
+
+let boosts = {
+  speed: false,
+  money: false,
+  extraSpin: 0,
+};
+
+function buyBoost(type, duration, cost) {
+  if (money >= cost) {
+    money -= cost;
+    activateBoost(type, duration);
+    save();
+    updateUI();
+  } else {
+    alert("Недостаточно Шакилей!");
+  }
+}
+
+function activateBoost(type, duration) {
+  if (type === "speed") {
+    boosts.speed = true;
+    setTimeout(() => (boosts.speed = false), duration);
+    alert("⚡ Ускоритель роста активирован на 10 минут!");
+  }
+  if (type === "extraSpin") {
+    boosts.extraSpin += 1;
+    alert("🎲 Вы получили +1 прокрутку рулетки!");
+  }
+}
+
+
+let rebirths = parseInt(localStorage.getItem("rebirths")) || 0;
+
+function tryRebirth() {
+  if (money >= 999_000_000_000) {
+    if (confirm("⚡ Перерождение! Всё сбросится, но заработки увеличатся.")) {
+      rebirths++;
+      localStorage.setItem("rebirths", rebirths);
+      money = 20;
+      slots = 3;
+      garden = [];
+      watering = 0;
+      save();
+      updateUI();
+      alert("✨ Ты сделал перерождение! Всего: " + rebirths);
+    }
+  } else {
+    alert("❌ Нужно 999 миллиардов для перерождения!");
+  }
+}
+
+// бонус дохода при сборе
+function getRebirthBonus(multiplier = 1) {
+  return 1 + rebirths * 0.1;
+}
+
+
+
+
+
+
+
+
+
+const bgMusic = document.getElementById("bg-music");
+
+document.addEventListener("click", () => {
+  if (bgMusic.paused) {
+    bgMusic.play();
+  }
+});
+
+const startScreen = document.getElementById("start-screen");
+const gameContainer = document.getElementById("game-container");
+
+startScreen.addEventListener("click", () => {
+  startScreen.style.display = "none";
+  gameContainer.style.filter = "blur(0)";
+});
+
+
+function openTab(tabName) {
+  let tabs = document.getElementsByClassName("tab");
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].style.display = "none";
+  }
+  document.getElementById(tabName + "Tab").style.display = "block";
+}
+
+
+function closeSkinsTab() {
+  // скрываем вкладку скинов
+  document.getElementById("skinsTab").style.display = "none";
+  // возвращаем, например, магазин
+  openTab("shop");
+}
+
+function openFrozenPack() {
+  if (frozenCrystals < 10000) return alert("Недостаточно 🧊 кристаллов!");
+  frozenCrystals -= 10000;
+  saveFrozen();
+
+  const screen = document.createElement("div");
+  screen.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,40,0.9);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#e3faff;font-size:24px;z-index:10000;`;
+  screen.textContent = "🎁 Открывается Frozen Pack...";
+  document.body.appendChild(screen);
+
+  // ⚙️ Настройка шансов и параметров растений
+  const frozenRewards = [
+    { name: "❄️ Ледяная ягода ", emoji: "🫐❄️", price: 50000, growTime: 900000, rarity: "легндарное", chance: 0.55 },
+    { name: "🌨️ Морозное яблоко", emoji: "🍎🌨️", price: 100000000, growTime: 3000000, rarity: "мифическое", chance: 0.35 },
+    { name: "💎 Хрустальная дыня", emoji: "🍈💎", price: 500000000, growTime: 108000000, rarity: "призматическое", chance: 0.08 },
+    { name: "🌌 Аврора", emoji: "🌌", price: 100000000000, growTime: 1641600000, rarity: "трансцендентное", chance: 0.02 },
+  ];
+
+  let roll = Math.random();
+  let total = 0, prize;
+  for (let r of frozenRewards) {
+    total += r.chance;
+    if (roll <= total) { prize = r; break; }
+  }
+
+  setTimeout(() => {
+    screen.textContent = `🎉 Вы получили ${prize.name}!`;
+
+    // 🌱 Автопосадка
+    const empty = garden.findIndex(p => !p);
+    if (empty !== -1) {
+      garden[empty] = {
+        ...prize,
+        start: Date.now(),
+        time: prize.growTime,
+        ready: false,
+      };
+      growPlant(empty);
+      updateUI();
+      save();
+    }
+
+    setTimeout(() => screen.remove(), 3000);
+  }, 2000);
+}
+
+function openClassicFrozenPack() {
+  if (frozenCrystals < 1000) return alert("Недостаточно 🧊 кристаллов!");
+  frozenCrystals -= 1000;
+  saveFrozen();
+
+  const reward = Math.floor(Math.random() * (50_000_000 - 500_000) + 500_000);
+  money += reward;
+  updateUI();
+  save();
+
+  const msg = document.createElement("div");
+  msg.textContent = `💰 Вы получили ${reward.toLocaleString()} Шакилей!`;
+  Object.assign(msg.style, { position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"#001e3c", color:"#9ee8ff", padding:"14px 20px", borderRadius:"10px", zIndex:10000 });
+  document.body.appendChild(msg);
+  setTimeout(()=>msg.remove(),3000);
+}
+
+
+/***************************************
+ * ADMIN ABUSE — ONE TIME PER PLAYER
+ * Grow & Sell
+ ***************************************/
+
+const ABUSE_KEY = "adminAbusePlayed_v1";
+
+/* ===============================
+   СТАРТ ПРОВЕРКИ
+================================ */
+if (!localStorage.getItem(ABUSE_KEY)) {
+  setTimeout(() => {
+    startAdminAbuse();
+    localStorage.setItem(ABUSE_KEY, "true");
+  }, 2000);
+}
+
+/* ===============================
+   ОСНОВНАЯ ЛОГИКА
+================================ */
+function startAdminAbuse() {
+  rgbCountdown(10, () => {
+    flashEffect();
+    startDisco();
+    startMessages();
+    startAdminPacks();
+    endAbuseAfter();
+
+
+  });
+}
+
+/* ===============================
+   RGB ОТСЧЁТ
+================================ */
+function rgbCountdown(seconds, callback) {
+  const box = document.createElement("div");
+  box.style.cssText = `
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:120px; font-weight:bold;
+    color:red; background:black;
+    z-index:100000;
+    animation: rgb 1s infinite;
+  `;
+  document.body.appendChild(box);
+
+  let current = seconds;
+  box.textContent = current;
+
+  const timer = setInterval(() => {
+    current--;
+    box.textContent = current;
+
+    if (current <= 0) {
+      clearInterval(timer);
+      box.remove();
+      callback();
+    }
+  }, 1000);
+}
+
+/* RGB анимация */
+const rgbStyle = document.createElement("style");
+rgbStyle.innerHTML = `
+@keyframes rgb {
+  0%{color:red;}
+  25%{color:yellow;}
+  50%{color:lime;}
+  75%{color:cyan;}
+  100%{color:red;}
+}
+`;
+document.head.appendChild(rgbStyle);
+
+/* ===============================
+   ВСПЫШКА
+================================ */
+function flashEffect() {
+  const flash = document.createElement("div");
+  flash.style.cssText = `
+    position:fixed; inset:0;
+    background:white;
+    z-index:100001;
+  `;
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 120);
+}
+
+/* ===============================
+   DISCO ФОН
+================================ */
+let discoInterval;
+function startDisco() {
+  discoInterval = setInterval(() => {
+    document.body.style.background =
+      `hsl(${Math.random() * 360}, 80%, 60%)`;
+  }, 300);
+}
+
+/* ===============================
+   СООБЩЕНИЯ (НОТИФИКАЦИИ)
+================================ */
+const abuseMessages = [
+  "aunxzz ✔:🔥 всем привет",
+  "aunxzz ✔:😈 АДМИН АЬЮЗ НАЧАЛСЯ!!!!!",
+  "aunxzz ✔:💀",
+  "aunxzz ✔:паки ловите там семена и шакили",
+  "aunxzz ✔:павел тоже тут",
+  "aunxzz ✔:что идет после 6.....",
+  "aunxzz ✔:6767676776",
+  "pavel  ✔: ничего себе сдесь происходит",
+  "aunxzz ✔: ага",
+  "aunxzz ✔: йухуууууу",
+  "aunxzz ✔:❤️ спасибо за присутсвие всем и пока!",
+];
+
+function startMessages() {
+  let i = 0;
+  const msgTimer = setInterval(() => {
+    if (i >= abuseMessages.length) {
+      clearInterval(msgTimer);
+      return;
+    }
+    showTopMessage(abuseMessages[i]);
+    i++;
+  }, 12000); // сообщение раз в 12 секунд
+}
+
+function showTopMessage(text) {
+  const msg = document.createElement("div");
+  msg.textContent = text;
+  msg.style.cssText = `
+    position:fixed;
+    top:20px; left:50%;
+    transform:translateX(-50%);
+    background:#ff0033;
+    color:white;
+    padding:12px 22px;
+    border-radius:14px;
+    font-weight:bold;
+    z-index:100002;
+    box-shadow:0 0 20px red;
+  `;
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3000);
+}
+
+/* ===============================
+   АДМИН ПАКИ
+================================ */
+function startAdminPacks() {
+  const packInterval = setInterval(() => {
+    spawnAdminPack();
+  }, 800);
+
+  // паки летят 40 секунд
+  setTimeout(() => clearInterval(packInterval), 300000);
+}
+
+function spawnAdminPack() {
+  const pack = document.createElement("div");
+  pack.textContent = "🎁";
+  pack.style.cssText = `
+    position:fixed;
+    left:${Math.random() * 90}%;
+    top:-50px;
+    font-size:40px;
+    cursor:pointer;
+    z-index:100003;
+    transition: top 3s linear;
+  `;
+  document.body.appendChild(pack);
+
+  setTimeout(() => {
+    pack.style.top = "110%";
+  }, 50);
+
+  pack.onclick = () => {
+    giveAdminReward();
+    pack.remove();
+  };
+
+  setTimeout(() => pack.remove(), 4000);
+}
+
+/* ===============================
+   НАГРАДА
+================================ */
+function giveAdminReward() {
+  if (Math.random() < 0.5) {
+    // деньги
+    const amount = Math.floor(
+      Math.random() * (1_000_000_000 - 1_000_000) + 1_000_000
+    );
+    money += amount;
+    showTopMessage(`💰 +${amount.toLocaleString()} Шакилей`);
+  } else {
+    // растение
+    const empty = garden.findIndex(p => !p);
+    if (empty !== -1) {
+      const plant = {
+        name: "Админское растение",
+        emoji: "🌈",
+        price: 10_000_000_000,
+        growTime: 3000,
+        rarity: "ADMIN",
+        start: Date.now(),
+        time: 3000,
+        ready: false
+      };
+      garden[empty] = plant;
+      growPlant(empty);
+      showTopMessage("🌱 Админское растение посажено!");
+    }
+  }
+  updateUI();
+  save();
+}
+
+/* ===============================
+   КОНЕЦ АБЬЮЗА
+================================ */
+function endAbuseAfter() {
+  setTimeout(() => {
+    clearInterval(discoInterval);
+    document.body.style.background = "";
+    showTopMessage("❤️ спасибо за участие всем");
+  }, 360000); // 10 минут
+
+
+}
+
+
+
+
+
+animateMoney();
+renderSeeds();
+updateUI();
+loadGrowth();
+function loadAdminMessage() {
+  fetch("adminMessage.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.message && data.message.trim() !== "") {
+        const msgBox = document.createElement("div");
+        msgBox.style.position = "fixed";
+        msgBox.style.top = "10px";
+        msgBox.style.left = "50%";
+        msgBox.style.transform = "translateX(-50%)";
+        msgBox.style.background = "rgba(255, 215, 0, 0.9)";
+        msgBox.style.color = "#000";
+        msgBox.style.padding = "10px 20px";
+        msgBox.style.borderRadius = "10px";
+        msgBox.style.fontWeight = "bold";
+        msgBox.style.zIndex = "9999";
+        msgBox.style.boxShadow = "0px 2px 10px rgba(0,0,0,0.3)";
+        msgBox.style.animation = "slideDown 0.5s ease-out";
+        msgBox.innerText = data.message;
+        document.body.appendChild(msgBox);
+
+        // Автоматическое удаление через 5 секунд
+        setTimeout(() => {
+          msgBox.remove();
+        }, 5000);
+      }
+    })
+    .catch(err => console.error("Ошибка загрузки админ-сообщения", err));
+}
+
+// Анимация
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes slideDown {
+  from { transform: translate(-50%, -50px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}`;
+document.head.appendChild(style);
+
+loadAdminMessage();
+  </script>
+</body>
+</html>
