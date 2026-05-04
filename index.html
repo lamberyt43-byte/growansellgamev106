@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grow And Sell!</title>
+
+  <style>
+    /* Фон игры (изначально размытый) */
+#game-container {
+    filter: blur(8px);
+    transition: filter 0.5s ease;
+}
+
+/* Стартовый экран */
+#start-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.logo-container {
+    text-align: center;
+    color: white;
+}
+
+.logo {
+    max-width: 700px;
+}
+
+.press-text {
+    font-size: 24px;
+    margin-top: 20px;
+    animation: blink 3s infinite;
+}
+
+/* Мигание текста */
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0.3; }
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f3f0e5;
+  color: #333;
+  text-align: center;
+  padding: 20px;
+}
+#jumpEventContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 20px auto;
+    width: 100%;
+}
+
+/* Длинный средний баннер */
+#jumpBanner {
+    width: 450px; /* Длинный */
+    height: 70px; /* Средний по высоте */
+    background: linear-gradient(-45deg, #00d2ff, #3a7bd5, #00c6ff, #0072ff);
+    background-size: 300% 300%;
+    animation: blueGradient 6s ease infinite;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+}
+
+@keyframes blueGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.banner-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+}
+
+.event-title {
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.coin-display {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-size: 20px;
+}
+
+/* Кнопка */
+#jumpButton {
+    background: #f0f8ff;
+    color: #0072ff;
+    border: 2px solid #0072ff;
+    padding: 10px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#jumpButton:hover {
+    background: #0072ff;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Окно шопа */
+#jumpShop {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 25px;
+    border: 4px solid #00d2ff;
+    z-index: 1001;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.4);
+}
+#jumpWelcomeModal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 30, 60, 0.8); /* Темно-синий полупрозрачный фон */
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome-content {
+    background: linear-gradient(135deg, #ffffff, #e7f5ff);
+    padding: 40px;
+    border-radius: 30px;
+    border: 4px solid #0072ff;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    font-family: sans-serif;
+}
+
+.welcome-content h2 {
+    color: #0072ff;
+    margin-bottom: 15px;
+}
+
+.welcome-features {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    font-weight: bold;
+    color: #3a7bd5;
+    font-size: 14px;
+}
+
+.welcome-content button {
+    background: #0072ff;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.welcome-content button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+}
+#plantIndex {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 1000;
+    max-height: 80vh;
+    overflow-y: auto;
+    width: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.index-card {
+    background: #34495e;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #7f8c8d;
+}
+
+.index-card.locked {
+    opacity: 0.6;
+    filter: grayscale(1);
+    border-style: dashed;
+}
+
+.hidden { display: none; }
+
+#leaderboardTabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+#leaderboardTabs button {
+  flex: 1;
+  padding: 4px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.disco {
+  animation: discoBg 0.4s infinite alternate;
+}
+
+@keyframes discoBg {
+  0% { background-color: #ff0080; }
+  25% { background-color: #00ffff; }
+  50% { background-color: #ffff00; }
+  75% { background-color: #00ff00; }
+  100% { background-color: #ff0000; }
+}
+
+.glitch {
+  animation: glitchAnim 0.1s infinite;
+}
+
+@keyframes glitchAnim {
+  0% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.gray-screen-overlay {
+  position: fixed;
+  inset: 0;
+  background: #888;
+  z-index: 99998;
+  pointer-events: none;
+  animation: snapGrayFade 1s forwards;
+}
+
+@keyframes snapGrayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+.birthday-bg {
+  animation: birthdayPulse 3s infinite alternate;
+}
+
+@keyframes birthdayPulse {
+  0% { background-color: #ff99cc; }
+  100% { background-color: #ff66aa; }
+}
+
+
+
+
+.birthday-text {
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px pink, 0 0 20px red;
+  writing-mode: vertical-rl;   /* ВЕРТИКАЛЬНЫЙ ТЕКСТ */
+  text-orientation: mixed;
+  animation: fallBirthday 5s linear forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+@keyframes fallBirthday {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+
+.left-text { left: 10px; }
+.right-text { right: 1px; }
+
+.ramadan-bg {
+  animation: ramadanGlow 6s infinite alternate;
+}
+
+@keyframes ramadanGlow {
+  0% { background-color: #1e2f1e; }
+  100% { background-color: #2e4f2e; }
+}
+
+.ramadan-light {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7CFC00;
+  box-shadow: 0 0 10px #7CFC00;
+  animation: fadeLight 2s ease-out forwards;
+}
+
+@keyframes fadeLight {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+#activeEventsBar {
+  position: fixed;
+  top: 60px; /* ниже шакилей */
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+}
+
+.eventIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s;
+  
+}
+
+.eventIcon:hover {
+  transform: scale(1.1);
+}
+
+.eventTooltip {
+  position: absolute;
+  right: 50px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.eventIcon:hover .eventTooltip {
+  opacity: 1;
+}
+
+/* DISCO RGB */
+.discoIcon {
+  animation: rgb 2s infinite linear;
+}
+
+@keyframes rgb {
+  0% { background: red; }
+  25% { background: yellow; }
+  50% { background: lime; }
+  75% { background: cyan; }
+  100% { background: red; }
+}
+
+/* LUCK */
+.luckIcon {
+  background: #2ecc71;
+}
+
+/* RAIN */
+.rainIcon {
+  background: #e74c3c;
+}
+
+/* RAMADAN */
+.ramadanIcon {
+  background: #293b18;
+}
+
+/* SAKURA */
+.sakuraIcon {
+  background: #ffc0cb;
+}
+
+.announcement {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  color: #000;
+  padding: 12px 18px;
+  border-radius: 999px; /* плоская таблетка */
+  font-family: inherit;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: annIn 0.25s ease forwards;
+}
+
+.announcement.hide {
+  animation: annOut 0.25s ease forwards;
+}
+
+.ann-author {
+  font-weight: 600;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ann-text {
+  font-size: 15px;
+  color: #000;
+  opacity: 0.9;
+}
+
+/* ЗЕЛЁНЫЙ КВАДРАТ */
+.gas-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background: #2ecc71;
+  border-radius: 3px;
+  font-size: 10px;
+  color: white;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@keyframes annIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes annOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+#pot {
+  font-size: 24px;
+  line-height: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.disco {
+  animation: discoBg 0.5s infinite alternate;
+}
+
+@keyframes discoBg {
+  from { background-color: #ff00ff; }
+  to { background-color: #00ffff; }
+}
+
+
+.tg-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #0088cc;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.tg-btn:hover {
+  background: #006699;
+}
+
+
+
+
+
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 2px); }
+  75% { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.shake {
+  animation: shake 0.1s infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#plantShop {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  max-height: 70vh;
+  background:#fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  z-index: 999;
+}
+
+#plantShop h3 {
+  margin-top: 0;
+}
+
+.shop-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.shop-list button {
+  width: 110px;
+  margin: 6px;
+  font-size: 14px;
+}
+
+.hidden {
+  display: none;
+}
+
+
+#harvestButton {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffb74d;
+  color: #333;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.3s;
+}
+
+#harvestButton:hover {
+  background-color: #ffa000;
+}
+
+
+#moneyBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #c5e1a5;
+  color:  #333;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+
+#game {
+  max-width: 500px;
+  margin: auto;
+  background: #fff8f0;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background: #8bc34a;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background:  #689f38;
+}
+
+#garden {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.plot {
+  width: 80px;
+  height: 80px;
+  margin: 5px;
+  background:#c8e6c9;
+  border: 2px dashed #558b2f;
+  border-radius: 10px;
+  position: relative;
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plot.ready {
+  background:#fff59d;
+}
+
+.tooltip {
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.7);
+  border-radius: 0 0 10px 10px;
+}
+
+@keyframes growPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.plot.growing {
+  animation: growPulse 1.5s infinite;
+}
+@keyframes nyanRainbow {
+  0% { background: #ff0000; }
+  20% { background: #ff9900; }
+  40% { background: #33ff00; }
+  60% { background: #00ccff; }
+  80% { background: #9933ff; }
+  100% { background: #ff0000; }
+}
+
+.nyan-cat {
+  position: fixed;
+  left: -120px;
+  font-size: 34px;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  transition: left 4s linear;
+}
+  </style>
+
+  
+</head>
+<body>
+  <link rel="stylesheet" href="style.css" />
+
+  <div id="game">
+    <h1>🌿 Вырасти и продай</h1>
+    <div id="moneyBar">
+  💰 Шакили: <span id="money">0</span>
+  <div id="activeEventsBar"></div>
+   
+</div>
+<!-- Стартовый экран -->
+<div id="start-screen">
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/yYBdRM1t/Gemini-Generated-Image-yqjyixyqjyixyqjy-(1).png" alt="logo" class="logo">
+        <p class="press-text">Нажмите в любом месте чтобы продолжить</p>
+    </div>
+</div>
+
+<!-- Основной игровой контейнер -->
+<div id="game-container">
+    <!-- Здесь твой игровой код -->
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<div id="jumpEventContainer">
+    <!-- Длинный средний баннер с анимацией -->
+    <div id="jumpBanner" class="shimmer-effect">
+        <div class="banner-content">
+            <span class="event-title">🚀 ERSANCIK JUMP EVENT!</span>
+            <div class="coin-display">
+                <span id="jumpCoins">0</span> <span class="coin-icon">🔵</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка шопа под баннером -->
+    <button id="jumpButton" onclick="toggleJumpShop()">🔵 Открыть JUMP SHOP</button>
+</div>
+
+<!-- Окно магазина -->
+<div id="jumpShop">
+  <h3>🔵 JUMP BALL SHOP</h3>
+  <button onclick="openJumperPack()">🎁 BALL PACK (75 000 🔵)</button>
+  <button onclick="openJumperProPack()">🎁 PRO BALL PACK (200 000 🔵)</button>
+  <br><br>
+  <button onclick="toggleJumpShop()">❌ Закрыть</button>
+</div>
+<audio id="eventMusic"></audio>
+
+
+    <div id="upgradeShop">
+      <h3>🔧 Улучшения</h3>
+<button id="slotButton" onclick="buySlot()">Добавить грядку (15💰)</button>
+<button id="wateringButton" onclick="buyWatering()">Поливалка 🌧️ (10💰)</button>
+<button onclick="tryRebirth()">🔄 Перерождение (999 B💰)</button>
+    </div>
+    <h3>🌿 Семена</h3>
+
+<button onclick="toggleIndex()">📖 Индекс</button>
+
+<div id="plantIndex" class="hidden">
+    <div class="index-content">
+        <h2>Колеккция ваших растений!</h2>
+        <div id="indexGrid"></div>
+        <button onclick="toggleIndex()">Закрыть</button>
+    </div>
+</div>
+
+    <button onclick="toggleShop()">🛒 Открыть магазин</button>
+
+<div id="plantShop" class="hidden">
+  <h3>🌱 Магазин растений <button onclick="toggleShop()">❌</button></h3>
+  <div id="seedButtons" class="shop-list"></div>
+</div>
+
+
+    <h3>🌳 Грядки</h3>
+    <div id="garden"></div>
+  </div>
+
+<div id="leaderboardBox">
+  <h3>🏆 Таблица лидеров</h3>
+
+  <div id="leaderboardTabs">
+    <button onclick="setLeaderboardMode('money')">💰 Шакили</button>
+    <button onclick="setLeaderboardMode('rebirths')">🔁 Перерождения</button>
+  </div>
+
+  <div id="leaderboardList">Загрузка...</div>
+</div>
+
+<div id="redeemSection">
+  <h3>🎁 Коды</h3>
+  <input type="text" id="redeemInput" placeholder="Введите код">
+  <button onclick="redeemCode()">Активировать</button>
+  <p id="redeemMessage"></p>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+
+
+<!-- Кнопка вызова -->
+<button onclick="toggleSettings()" >⚙️ Настройки</button>
+
+<!-- Простое Окно Настроек -->
+<div id="settingsBox" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid #333; padding: 20px; z-index: 5000; min-width: 250px; text-align: center; font-family: sans-serif;">
+    <h3 style="margin-top: 0;">Настройки данных</h3>
+    
+    <textarea id="dataInput" placeholder="Код сохранения..." style="width: 100%; height: 60px; margin-bottom: 10px;"></textarea>
+    
+    <div style="display: flex; gap: 5px; justify-content: center;">
+        <button onclick="exportGame()">Экспорт</button>
+        <button onclick="importGame()">Импорт</button>
+    </div>
+    
+    <hr>
+    <button onclick="toggleSettings()" style="background: #8B0000; border: 1px solid #ccc; cursor: pointer;">Закрыть</button>
+</div>
+<button id="donateBtn" onclick="supportDev()">
+💖 Поддержать разработчика
+</button>
+  <a href="https://t.me/+YaDJr4kBFOUyYjEy" target="_blank" class="tg-btn">Наш Telegram 📲</a>
+
+</div>
+
+  <script src="game.js"></script>
+
+  <button id="harvestButton" onclick="harvestAll()">Собрать всё 🌾</button>
+
+<div id="playerIdBox" style="
+  margin-top: 8px;
+  font-size: 12px;
+  color: #555;
+  text-align: center;
+">
+  ID: <span id="playerIdText"></span>
+</div>
+
+<div id="adminPanel" style="
+display:none;
+position:fixed;
+bottom:20px;
+right:20px;
+background:#111;
+color:white;
+padding:16px;
+border-radius:14px;
+z-index:99999;
+width:260px;
+">
+
+  <h3>👑 Admin Panel</h3>
+
+  <input id="adminMsg" placeholder="Announcement" style="width:100%">
+  <button onclick="sendAnnouncement()">Send</button>
+
+  <hr>
+
+<button onclick="adminStartLuck(2)">Luck x2</button>
+<button onclick="adminStartLuck(4)">Luck x4</button>
+<button onclick="adminStartDisco()">Disco</button>
+<button onclick="adminStartLuckyRain()">Lucky Packs</button>
+<button onclick="adminStartRamadan()">Ramadan</button>
+<button onclick="adminStartBirthday()">B-Day</button>
+<button onclick="adminInstantGrow()">Skip Grow</button>
+<button onclick="adminStartNyan()">Nyan Cat</button>
+<button onclick="stopAllEvents()" style="background:red;">
+  ⛔ Stop All Events
+</button>
+
+  <div id="onlineCount" style="
+  margin-top: 12px;
+  font-weight: bold;
+  color: #00ff88;
+  font-size: 16px;
+">
+  Онлайн сейчас: 0
+</div>
+
+</div>
+<!-- Окно приветствия (показывается 1 раз) -->
+<div id="jumpWelcomeModal">
+  <div class="welcome-content">
+    <h2>🚀 ERSANCIK JUMP COLLAB!</h2>
+    <p>Добро пожаловать в специальный ивент-коллаборацию!</p>
+    <p>Зарабатывай шары, собирай уникальные <b>прыгучие шары</b> и копи <b>синие коины</b> даже в AFK-режиме!</p>
+    <div class="welcome-features">
+        <span>🔵 AFK Доход</span>
+        <span>🎁 Эксклюзивные шары</span>
+        <span>✨ Редкие скины</span>
+    </div>
+    <button onclick="closeWelcome()">ПОЕХАЛИ!</button>
+  </div>
+</div>
+<p id="recordUpdateTimer" style="font-size: 12px; color: gray; margin-top: 10px;">
+  V2.0.1. <span id="updateTime"></span>
+</p>
+
+  <script>
+    let money = parseInt(localStorage.getItem('money')) || 10;
+let slots = parseInt(localStorage.getItem('slots')) || 1;
+let watering = parseInt(localStorage.getItem('watering')) || 0;
+let slotPrice = parseInt(localStorage.getItem('slotPrice')) || 15;
+let wateringPrice = parseInt(localStorage.getItem('wateringPrice')) || 10;
+let garden = JSON.parse(localStorage.getItem('garden')) || [];
+let displayedMoney = money;
+let bestMoney = parseInt(localStorage.getItem('bestMoney')) || 0;
+let rouletteSpinsToday =
+  parseInt(localStorage.getItem('rouletteSpinsToday')) || 0;
+let lastRouletteDate = localStorage.getItem('lastRouletteDate') || '';
+let currentPlotSkin = localStorage.getItem('currentPlotSkin') || 'default';
+let currentGlobalEvent = null;
+let lastClickTime = 0;
+let sessionJoinTime = Date.now();
+// Загружаем список открытых растений из localStorage
+let discoveredPlants =
+  JSON.parse(localStorage.getItem('discoveredPlants')) || [];
+
+function setSkin(skin) {
+  currentPlotSkin = skin;
+  localStorage.setItem('currentPlotSkin', currentPlotSkin);
+  updateUI();
+}
+
+const maxSlots = 120;
+const seeds = [
+  {
+    name: 'Лук',
+    emoji: '🧅',
+    price: 2,
+    growTime: 3000,
+    rarity: 'стартовое',
+    favorite: false,
+  },
+  {
+    name: 'Морковь',
+    emoji: '🥕',
+    price: 6,
+    growTime: 6000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Лимон',
+    emoji: '🍋',
+    price: 8,
+    growTime: 6000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Свекла',
+    emoji: '🍠',
+    price: 10,
+    growTime: 8000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Арбуз',
+    emoji: '🍉',
+    price: 20,
+    growTime: 10000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Паприка',
+    emoji: '🌶️',
+    price: 80,
+    growTime: 11000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Клубника',
+    emoji: '🍓',
+    price: 150,
+    growTime: 12000,
+    rarity: 'редкое',
+    favorite: false,
+  },
+  {
+    name: 'Помидор',
+    emoji: '🍅',
+    price: 300,
+    growTime: 13500,
+    rarity: 'эпическое',
+    favorite: false,
+  },
+  {
+    name: 'Банан',
+    emoji: '🍌',
+    price: 600,
+    growTime: 14500,
+    rarity: 'эпическое',
+    favorite: false,
+  },
+  {
+    name: 'Груша',
+    emoji: '🍐',
+    price: 850,
+    growTime: 15500,
+    rarity: 'эпическое',
+    favorite: false,
+  },
+  {
+    name: 'Апельсин',
+    emoji: '🍊',
+    price: 990,
+    growTime: 17000,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Кокос',
+    emoji: '🥥',
+    price: 1300,
+    growTime: 18000,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Капуста',
+    emoji: '🥬',
+    price: 1900,
+    growTime: 19500,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Мандарин',
+    emoji: '🍊',
+    price: 3000,
+    growTime: 20500,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Вишня',
+    emoji: '🍒',
+    price: 9000,
+    growTime: 23000,
+    rarity: 'мифическое',
+    favorite: false,
+  },
+  {
+    name: 'Раффлезия',
+    emoji: '🌼',
+    price: 20000,
+    growTime: 32000,
+    rarity: 'мифическое',
+    favorite: false,
+  },
+
+  // РЕАЛЬНЫЕ растения для плавного роста цены
+  {
+    name: 'Спаржа',
+    emoji: '🌿',
+    price: 100000,
+    growTime: 45000,
+    rarity: 'мифическое',
+    favorite: false,
+  },
+  {
+    name: 'Артишок',
+    emoji: '🥀',
+    price: 500000,
+    growTime: 60000,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Рамбутан',
+    emoji: '🍓',
+    price: 5000000,
+    growTime: 80000,
+    rarity: 'легендарное',
+    favorite: false,
+  },
+  {
+    name: 'Дуриан',
+    emoji: '🌰',
+    price: 10000000,
+    growTime: 100000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+  {
+    name: 'Карамбола',
+    emoji: '⭐',
+    price: 50000000,
+    growTime: 120000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+
+  {
+    name: 'Голубика',
+    emoji: '🫐',
+    price: 150_000_000,
+    growTime: 10000000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+  {
+    name: 'Лотос',
+    emoji: '🪷',
+    price: 350_000_000,
+    growTime: 10000000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+  {
+    name: 'Кактус',
+    emoji: '🌵',
+    price: 600_000_000,
+    growTime: 80000000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+  {
+    name: 'Вуд цикас',
+    emoji: '🌺',
+    price: 900_000_000,
+    growTime: 80000000,
+    rarity: 'призматическое',
+    favorite: false,
+  },
+];
+const rarityOrder = {
+  обычное: 1,
+  редкое: 2,
+  эпическое: 3,
+  легендарное: 4,
+  мифическое: 5,
+};
+// 🎁 Список кодов
+// Тип может быть: "money" или "plant"
+const redeemCodes = {
+  WWW: { type: 'money', value: 3000000000 },
+  EJ_X_GAS: { type: 'money', value: 67676 },
+  UPDATEV2_0_1: { type: 'money', value: 3000000000 },
+  ADMINABUSE: { type: 'money', value: 26000000 },
+  OLDSHOP: { type: 'money', value: 777000000 },
+  IDINAOHOTU: { type: 'money', value: 3000000000 },
+  NEWEVENT: { type: 'money', value: 3000000000 },
+  // Пример кода, который даёт растение:
+
+  GASTOP: {
+    type: 'plant',
+    value: {
+      name: 'Росток',
+      emoji: '🌱',
+      price: 5000000000,
+      growTime: 10000000,
+      rarity: 'призматическое',
+    },
+  },
+  PLANT67: {
+    type: 'plant',
+    value: {
+      name: '67',
+      emoji: '6️⃣7️⃣',
+      price: 67000000000,
+      growTime: 67000000,
+      rarity: 'мифическое',
+    },
+  },
+};
+
+// Загружаем использованные коды (чтобы не повторялись после перезахода)
+let usedCodes = JSON.parse(localStorage.getItem('usedCodes')) || [];
+
+// 💬 Активация кода
+function redeemCode() {
+  const input = document
+    .getElementById('redeemInput')
+    .value.trim()
+    .toUpperCase();
+  const message = document.getElementById('redeemMessage');
+
+  if (!input) {
+    message.textContent = '❌ Введите код!';
+    return;
+  }
+
+  if (usedCodes.includes(input)) {
+    message.textContent = '⚠️ Этот код уже был активирован!';
+    return;
+  }
+
+  const codeData = redeemCodes[input];
+
+  if (!codeData) {
+    message.textContent = '❌ Неверный код!';
+    return;
+  }
+
+  // 💰 Если код — на деньги
+  if (codeData.type === 'money') {
+    money += codeData.value;
+    message.textContent = `✅ Код активирован! Вы получили ${formatMoney(codeData.value)} 💰`;
+  }
+
+  // 🌱 Если код — на растение
+  else if (codeData.type === 'plant') {
+    const plantData = codeData.value;
+
+    // Находим пустую грядку
+    const emptyIndex = garden.findIndex((p) => !p);
+    if (emptyIndex === -1) {
+      message.textContent = '❌ Нет свободных грядок для посадки растения!';
+    } else {
+      garden[emptyIndex] = {
+        ...plantData,
+        start: Date.now(),
+        time: plantData.growTime,
+        ready: false,
+      };
+      growPlant(emptyIndex);
+      message.textContent = `✅ Вы получили растение: ${plantData.emoji} ${plantData.name}!`;
+    }
+  }
+
+  // ✅ Сохраняем результат
+  usedCodes.push(input);
+  localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
+  save(); // сохраняем прогресс
+  updateUI();
+}
+
+function save() {
+  localStorage.setItem('money', money);
+  localStorage.setItem('slots', slots);
+  localStorage.setItem('watering', watering);
+  localStorage.setItem('garden', JSON.stringify(garden));
+  if (money > bestMoney) {
+    bestMoney = money;
+    localStorage.setItem('bestMoney', bestMoney);
+  }
+  localStorage.setItem('slotPrice', slotPrice);
+  localStorage.setItem('wateringPrice', wateringPrice);
+  localStorage.setItem('lastSeen', Date.now());
+}
+
+function updateUI() {
+  document.getElementById('money').textContent = formatMoney(money);
+  renderGarden();
+  updateLeaderboard();
+}
+
+function renderGarden() {
+  const gardenDiv = document.getElementById('garden');
+  gardenDiv.innerHTML = '';
+
+  for (let i = 0; i < slots; i++) {
+    const plot = document.createElement('div');
+    plot.className = 'plot';
+    if (currentPlotSkin === 'night') {
+      plot.classList.add('night-skin');
+    }
+
+    const plant = garden[i];
+    if (plant) {
+      plot.textContent = plant.emoji;
+      if (!plant.ready) {
+        plot.classList.add('growing');
+      }
+      if (plant.ready) {
+        plot.innerHTML += `<div class="tooltip">Готово! (${plant.name})</div>`;
+        plot.onclick = () => {
+          let base = plant.price * 1.5 * getRebirthBonus();
+
+          // 🎲 рандом от 80% до 150%
+          let randomMultiplier = 0.8 + Math.random() * 0.7;
+
+          let final = Math.floor(base * randomMultiplier);
+
+          // ... внутри plot.onclick для готового растения
+          money += final;
+          unlockPlant(plant.name); // <--- ДОБАВИТЬ ЭТО
+          garden[i] = null;
+          // ...
+
+          money += final;
+          garden[i] = null;
+          updateUI();
+          save();
+        };
+      } else {
+        const percent = Math.floor(
+          ((Date.now() - plant.start) / plant.time) * 100,
+        );
+        plot.innerHTML += `<div class="tooltip">${plant.rarity} • ${percent}%</div>`;
+      }
+    } else {
+      plot.onclick = () => plantSeed(i);
+    }
+
+    gardenDiv.appendChild(plot);
+  }
+}
+
+function renderSeeds() {
+  const rarityOrder = {
+    обычное: 1,
+    редкое: 2,
+    эпическое: 3,
+    легендарное: 4,
+    мифическое: 5,
+  };
+
+  seeds.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
+
+  const seedButtons = document.getElementById('seedButtons');
+  seedButtons.innerHTML = '';
+  seeds.forEach((seed, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = `${seed.emoji} ${seed.name} (${formatMoney(seed.price)}💰)`;
+    btn.onclick = () => {
+      selectedSeed = index;
+      toggleShop();
+    };
+    seedButtons.appendChild(btn);
+  });
+}
+
+let selectedSeed = null;
+
+function plantSeed(i) {
+  if (selectedSeed === null) return;
+
+  // 🔴 ВОТ ЭТО ДОБАВЬ
+  if (garden[i]) return;
+
+  const seed = seeds[selectedSeed];
+
+  if (money < seed.price) return;
+
+  money -= seed.price;
+
+  let time = seed.growTime * (1 - watering * 0.05);
+
+  if (time < seed.growTime * 0.3) {
+    time = seed.growTime * 0.3;
+  }
+
+  garden[i] = {
+    ...seed,
+    start: Date.now(),
+    time: time,
+    ready: false,
+  };
+
+  growPlant(i);
+  updateUI();
+  save();
+}
+function growPlant(i) {
+  const interval = setInterval(() => {
+    const plant = garden[i];
+    if (!plant || plant.ready) return clearInterval(interval);
+    if (Date.now() - plant.start >= plant.time) {
+      const timePassed = Date.now() - plant.start;
+      const growTime = plant.time;
+      if (timePassed >= growTime) {
+        // 🎨 Улучшенные мутации
+        let chance = 0.05;
+
+        // если Mutation Surge активен
+        if (
+          activeEvents.mutationSurge.active &&
+          plant.start >= activeEvents.mutationSurge.startedAt
+        ) {
+          chance = 0.6;
+        }
+
+        if (Math.random() < getMutationChance(chance)) {
+          // 5% шанс на мутацию
+          let type;
+          let roll = Math.random();
+
+          if (roll < 0.03) {
+            type = ['silver', 'gold'][Math.floor(Math.random() * 2)];
+          } else if (roll < 0.049) {
+            type = 'rainbow';
+          } else {
+            type = 'cosmic';
+          }
+
+          if (type === 'silver') {
+            plant.price *= 2;
+            plant.emoji = '🥈' + plant.emoji;
+            plant.mutation = 'Серебряное 🌟 (×2 деньги)';
+          }
+          if (type === 'gold') {
+            plant.price *= 5;
+            plant.emoji = '🥇' + plant.emoji;
+            plant.mutation = 'Золотое 💰 (×5 деньги)';
+          }
+          if (type === 'rainbow') {
+            plant.price *= 10;
+            plant.emoji = '🌈' + plant.emoji;
+            plant.mutation = 'Радужное 🌈 (×10 деньги + +50% скорость роста)';
+            plant.growTime = Math.floor(plant.growTime * 0.5); // быстрее растёт
+          }
+        }
+
+        plant.ready = true;
+        updateUI();
+        save();
+        clearInterval(interval);
+      }
+    }
+  }, 1000);
+}
+
+function buySlot() {
+  if (slots >= maxSlots) {
+    alert('Максимум грядок достигнут! 🌾');
+    return;
+  }
+
+  if (money >= slotPrice) {
+    money -= slotPrice;
+
+    slots += 1;
+    garden.push(null);
+
+    slotPrice = Math.floor(slotPrice * 1.15); // рост цены
+
+    updateUpgradeButtons();
+    updateUI();
+    save();
+  } else {
+    alert('Недостаточно шакилей!');
+  }
+}
+
+function buyWatering() {
+  if (money >= wateringPrice) {
+    money -= wateringPrice;
+    watering += 1;
+
+    wateringPrice = Math.floor(wateringPrice * 1.15);
+
+    updateUpgradeButtons();
+    updateUI();
+    save();
+  } else {
+    alert('Недостаточно шакилей!');
+  }
+}
+function updateUpgradeButtons() {
+  document.getElementById('slotButton').textContent =
+    `🌱 Грядка (${slots}/${maxSlots}) (${formatMoney(slotPrice)}💰)`;
+
+  document.getElementById('wateringButton').textContent =
+    `🌧️ Поливалка (ур. ${watering}) (${formatMoney(wateringPrice)}💰)`;
+}
+function loadGrowth() {
+  garden.forEach((plant, i) => {
+    if (plant && !plant.ready) {
+      growPlant(i);
+    }
+  });
+}
+
+function animateMoney() {
+  const display = document.getElementById('money');
+  if (!display) return;
+
+  if (displayedMoney !== money) {
+    displayedMoney += (money - displayedMoney) * 0.1;
+    if (Math.abs(money - displayedMoney) < 0.5) {
+      displayedMoney = money;
+    }
+    display.textContent = formatMoney(Math.floor(displayedMoney));
+  }
+
+  requestAnimationFrame(animateMoney);
+}
+
+function harvestAll() {
+  let harvested = false;
+  for (let i = 0; i < garden.length; i++) {
+    const plant = garden[i];
+    if (plant && plant.ready) {
+      // ... внутри цикла, где plant.ready
+      money += Math.floor(plant.price * 1.5 * getRebirthBonus());
+      unlockPlant(plant.name); // <--- ДОБАВИТЬ ЭТО
+      garden[i] = null;
+      // ...
+      money += Math.floor(plant.price * 1.5 * getRebirthBonus());
+
+      garden[i] = null;
+      harvested = true;
+    }
+  }
+  if (harvested) {
+    updateUI();
+    save();
+  } else {
+    alert('Нет готовых растений! 🌱');
+  }
+  updateQuestProgress(1, 1); // Сбор урожая
+}
+
+function toggleShop() {
+  const shop = document.getElementById('plantShop');
+  shop.classList.toggle('hidden');
+}
+
+function startRecordUpdateTimer(seconds) {
+  const timerDisplay = document.getElementById('updateTime');
+
+  function update() {
+    const min = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const sec = (seconds % 60).toString().padStart(2, '0');
+    timerDisplay.textContent = `${min}:${sec}`;
+
+    if (seconds <= 0) {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = 'Обновление...';
+      // можешь тут вызвать обновление или скрыть
+    }
+
+    seconds--;
+  }
+
+  update();
+
+  const timerInterval = setInterval(update, 1000);
+}
+
+let rebirths = parseInt(localStorage.getItem('rebirths')) || 0;
+
+function tryRebirth() {
+  let price = getRebirthPrice();
+
+  if (money >= price) {
+    if (
+      confirm(`⚡ Перерождение за ${formatMoney(price)}?\nДоход увеличится!`)
+    ) {
+      rebirths++;
+      localStorage.setItem('rebirths', rebirths);
+
+      money = 20;
+      slots = 3;
+      garden = [];
+      watering = 0;
+
+      slotPrice = 15;
+      wateringPrice = 10;
+
+      save();
+      updateUI();
+
+      alert('✨ Перерождение! Всего: ' + rebirths);
+    }
+  } else {
+    alert(`❌ Нужно ${formatMoney(price)} для перерождения!`);
+  }
+
+  updateLeaderboard();
+}
+
+function getRebirthPrice() {
+  return Math.floor(1e12 * Math.pow(1.5, rebirths));
+}
+// бонус дохода при сборе
+function getRebirthBonus(multiplier = 1) {
+  return 1 + rebirths * 0.1;
+}
+
+function updateQuestProgress() {}
+
+const startScreen = document.getElementById('start-screen');
+const gameContainer = document.getElementById('game-container');
+
+startScreen.addEventListener('click', () => {
+  startScreen.style.display = 'none';
+  gameContainer.style.filter = 'blur(0)';
+});
+
+function openTab(tabName) {
+  let tabs = document.getElementsByClassName('tab');
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].style.display = 'none';
+  }
+  document.getElementById(tabName + 'Tab').style.display = 'block';
+}
+
+function closeSkinsTab() {
+  // скрываем вкладку скинов
+  document.getElementById('skinsTab').style.display = 'none';
+  // возвращаем, например, магазин
+  openTab('shop');
+}
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyC4tqxiAlLaPSqULFANQoK3KjgVvemuM90',
+  authDomain: 'growandsell-online.firebaseapp.com',
+  databaseURL: 'https://growandsell-online-default-rtdb.firebaseio.com',
+  projectId: 'growandsell-online',
+  storageBucket: 'growandsell-online.firebasestorage.app',
+  messagingSenderId: '225873934463',
+  appId: '1:225873934463:web:9539354889c0152b4ba74a',
+};
+let seenAnnouncements = JSON.parse(
+  localStorage.getItem('seenAnnouncements') || '[]',
+);
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let playerId = localStorage.getItem('playerId');
+
+if (!playerId) {
+  playerId = 'player-' + Math.random().toString(36).slice(2, 10);
+  localStorage.setItem('playerId', playerId);
+}
+
+document.getElementById('playerIdText').textContent = playerId;
+
+const onlineRef = db.ref('online/' + playerId);
+onlineRef.set(true);
+onlineRef.onDisconnect().remove();
+
+document.getElementById('playerIdText').textContent = playerId;
+const ADMIN_ID = 'player-46ulpz8g';
+if (playerId === ADMIN_ID) {
+  document.getElementById('adminPanel').style.display = 'block';
+}
+
+function sendAnnouncement() {
+  const text = document.getElementById('adminMsg').value.trim();
+  if (!text) return;
+
+  const id = 'msg_' + Date.now();
+
+  db.ref('announcements/' + id).set({
+    id,
+    text,
+    author: 'aunxzz',
+    createdAt: Date.now(),
+    duration: 8000,
+  });
+
+  document.getElementById('adminMsg').value = '';
+}
+
+db.ref('announcements').on('child_added', (snap) => {
+  const data = snap.val();
+  if (!data) return;
+
+  if (seenAnnouncements.includes(data.id)) return;
+
+  showAnnouncement(data);
+});
+
+function showAnnouncement(data) {
+  seenAnnouncements.push(data.id);
+  localStorage.setItem('seenAnnouncements', JSON.stringify(seenAnnouncements));
+
+  const box = document.createElement('div');
+  box.className = 'announcement';
+
+  box.innerHTML = `
+    <div class="ann-author">
+      ${data.author}
+      <span class="gas-check">✔</span>
+    </div>
+    <div class="ann-text">${data.text}</div>
+  `;
+
+  document.body.appendChild(box);
+
+  setTimeout(() => {
+    box.classList.add('hide');
+    setTimeout(() => box.remove(), 600);
+  }, data.duration || 8000);
+}
+
+let activeEvents = {
+  luck: {
+    active: false,
+    multiplier: 1, // x2 x4 x6 x8
+  },
+  disco: {
+    active: false,
+  },
+  luckyRain: {
+    active: false,
+  },
+  mutationSurge: {
+    active: false,
+    startedAt: 0,
+  },
+  global: {
+    type: null,
+    endAt: 0,
+  },
+  nyan: {
+    active: false,
+  },
+};
+function getMutationChance(baseChance) {
+  let chance = baseChance;
+
+  if (activeEvents.luck.active) {
+    chance *= activeEvents.luck.multiplier;
+  }
+
+  return chance;
+}
+
+function startLuckEvent(multiplier = 2, duration = 300) {
+  activeEvents.luck.active = true;
+  activeEvents.luck.multiplier = multiplier;
+
+  setTimeout(() => {
+    activeEvents.luck.active = false;
+    activeEvents.luck.multiplier = 1;
+  }, duration * 1000);
+}
+if (activeEvents.disco.active) {
+  luckMultiplier *= 1.5;
+}
+function startDiscoEvent(duration = 300) {
+  if (currentGlobalEvent && currentGlobalEvent !== 'disco') return;
+  currentGlobalEvent = 'disco';
+  activeEvents.disco.active = true;
+  document.body.classList.add('disco');
+
+  setTimeout(() => {
+    activeEvents.disco.active = false;
+    document.body.classList.remove('disco');
+  }, duration * 1000);
+}
+function giveLuckyPackReward() {
+  const roll = Math.random();
+
+  if (roll < 0.4) {
+    money += 50000;
+  } else if (roll < 0.7) {
+    money += 250000;
+  } else {
+    giveRandomPlantWithMutation();
+  }
+
+  updateUI();
+  save();
+}
+function spawnLuckyPack() {
+  const pack = document.createElement('div');
+  pack.textContent = '🎁';
+  pack.style.cssText = `
+    position:fixed;
+    top:-40px;
+    left:${Math.random() * 90}%;
+    font-size:38px;
+    cursor:pointer;
+    z-index:99999;
+    transition:top 3s linear;
+  `;
+
+  document.body.appendChild(pack);
+  setTimeout(() => (pack.style.top = '110%'), 10);
+
+  pack.onclick = () => {
+    giveLuckyPackReward();
+    pack.remove();
+  };
+
+  setTimeout(() => pack.remove(), 3500);
+}
+function adminStartLuck(multiplier) {
+  const duration = prompt('Сколько секунд? (по умолчанию 300)', '300');
+  const time = parseInt(duration) || 300;
+
+  db.ref('events/luck').set({
+    active: true,
+    multiplier,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+function adminStartDisco() {
+  const duration = prompt('Сколько секунд? (по умолчанию 300)', '300');
+  const time = parseInt(duration) || 300;
+
+  db.ref('events/disco').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+function adminStartLuckyRain() {
+  const duration = prompt('Сколько секунд? (по умолчанию 60)', '60');
+  const time = parseInt(duration) || 60;
+
+  db.ref('events/luckyRain').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+db.ref('events').on('value', (snap) => {
+  const events = snap.val();
+  const bar = document.getElementById('activeEventsBar');
+  bar.innerHTML = '';
+
+  if (!events) {
+    activeEvents.luck.active = false;
+    activeEvents.disco.active = false;
+    activeEvents.luckyRain.active = false;
+    document.body.classList.remove('disco');
+    return;
+  }
+
+  // LUCK
+  if (events.luck?.active && Date.now() < events.luck.endAt) {
+    activeEvents.luck.active = true;
+    activeEvents.luck.multiplier = events.luck.multiplier;
+    renderEventIcon('luck', events.luck.endAt, '🍀', 'luckIcon');
+  } else {
+    activeEvents.luck.active = false;
+    activeEvents.luck.multiplier = 1;
+  }
+
+  // DISCO
+  if (events.disco?.active && Date.now() < events.disco.endAt) {
+    activeEvents.disco.active = true;
+    document.body.classList.add('disco');
+    renderEventIcon('disco', events.disco.endAt, '🪩', 'discoIcon');
+  } else {
+    activeEvents.disco.active = false;
+    document.body.classList.remove('disco');
+  }
+  if (events.disco?.active && Date.now() < events.disco.endAt) {
+    playEventMusic('disco.mp3', 'disco');
+  } else {
+    stopEventMusic('disco');
+  }
+  // RAIN
+  if (events.luckyRain?.active && Date.now() < events.luckyRain.endAt) {
+    activeEvents.luckyRain.active = true;
+    startLuckyRainVisual(events.luckyRain.endAt);
+    renderEventIcon('rain', events.luckyRain.endAt, '🌧️', 'rainIcon');
+  } else {
+    activeEvents.luckyRain.active = false;
+  }
+
+  // MUTATION SURGE
+  if (events.mutationSurge?.active && Date.now() < events.mutationSurge.endAt) {
+    activeEvents.mutationSurge.active = true;
+    activeEvents.mutationSurge.startedAt = events.mutationSurge.startAt;
+    renderEventIcon('mutation', events.mutationSurge.endAt, '🧬', 'luckIcon');
+  } else {
+    activeEvents.mutationSurge.active = false;
+  }
+  // RAMADAN
+  if (events.ramadan?.active && Date.now() < events.ramadan.endAt) {
+    startRamadanVisual(events.ramadan.endAt);
+    renderEventIcon('ramadan', events.ramadan.endAt, '🌙', 'ramadanIcon');
+  }
+  if (events.ramadan?.active && Date.now() < events.ramadan.endAt) {
+    playEventMusic('ramadan.mp3', 'ramadan');
+  } else {
+    stopEventMusic('ramadan');
+  }
+
+  // BIRTHDAY
+  if (events.birthday?.active && Date.now() < events.birthday.endAt) {
+    startBirthdayVisual(events.birthday.endAt);
+    renderEventIcon('birthday', events.birthday.endAt, '🎂', 'discoIcon');
+  }
+  if (events.birthday?.active && Date.now() < events.birthday.endAt) {
+    playEventMusic('birthday.mp3', 'birthday');
+  } else {
+    stopEventMusic('birthday');
+  }
+  // SAKURA
+  if (events.sakura?.active && Date.now() < events.sakura.endAt) {
+    startSakuraVisual(events.sakura.endAt);
+    renderEventIcon('sakura', events.sakura.endAt, '🌸', 'sakuraIcon');
+  }
+  if (events.sakura?.active && Date.now() < events.sakura.endAt) {
+    playEventMusic('sakura.mp3', 'sakura');
+  } else {
+    stopEventMusic('sakura');
+  }
+
+  // NYAN CAT
+  if (events.nyan?.active && Date.now() < events.nyan.endAt) {
+    activeEvents.nyan.active = true;
+    renderEventIcon('nyan', events.nyan.endAt, '🐱', 'nyanIcon');
+    startNyanVisual(events.nyan.endAt);
+  } else {
+    activeEvents.nyan.active = false;
+  }
+  if (events.nyan?.active && Date.now() < events.nyan.endAt) {
+    playEventMusic('nyan.mp3', 'nyan');
+  } else {
+    stopEventMusic('nyan');
+  }
+});
+
+let luckyRainInterval = null;
+
+function startLuckyRainVisual(endAt) {
+  if (luckyRainInterval) return;
+
+  luckyRainInterval = setInterval(() => {
+    if (Date.now() >= endAt) {
+      clearInterval(luckyRainInterval);
+      luckyRainInterval = null;
+      return;
+    }
+    spawnLuckyPack();
+  }, 800);
+}
+
+db.ref('online').on('value', (snap) => {
+  const users = snap.val();
+  const count = users ? Object.keys(users).length : 0;
+  document.getElementById('onlineCount').textContent =
+    'Онлайн сейчас: ' + count;
+});
+function renderEventIcon(name, endAt, emoji, className) {
+  const bar = document.getElementById('activeEventsBar');
+
+  const div = document.createElement('div');
+  div.className = 'eventIcon ' + className;
+  div.id = 'event_' + name;
+  div.textContent = emoji;
+
+  const tooltip = document.createElement('div');
+  tooltip.className = 'eventTooltip';
+  div.appendChild(tooltip);
+
+  const interval = setInterval(() => {
+    const left = Math.floor((endAt - Date.now()) / 1000);
+
+    if (left <= 0) {
+      createEndFlash();
+      clearInterval(interval);
+      div.remove();
+      return;
+    }
+
+    tooltip.textContent = left + ' сек.';
+  }, 500);
+
+  bar.appendChild(div);
+}
+
+function stopAllEvents() {
+  db.ref('events').set({});
+}
+function adminStartSakura() {
+  const duration = prompt('Сколько секунд? (по умолчанию 300)', '300');
+  const time = parseInt(duration) || 300;
+
+  db.ref('events/sakura').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+function adminStartMutationSurge() {
+  const duration = prompt('Сколько секунд?', '300');
+  const time = parseInt(duration) || 300;
+
+  db.ref('events/mutationSurge').set({
+    active: true,
+    startAt: Date.now(),
+    endAt: Date.now() + time * 1000,
+  });
+}
+function adminStartRamadan() {
+  const duration = prompt('Сколько секунд? (по умолчанию 300)', '300');
+  const time = parseInt(duration) || 300;
+
+  db.ref('events/ramadan').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+function adminStartBirthday() {
+  const duration = prompt('Сколько секунд? (по умолчанию 120)', '120');
+  const time = parseInt(duration) || 120;
+
+  db.ref('events/birthday').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+function adminStartNyan() {
+  const duration = prompt('Сколько секунд?', '60');
+  const time = parseInt(duration) || 60;
+
+  db.ref('events/nyan').set({
+    active: true,
+    endAt: Date.now() + time * 1000,
+  });
+}
+
+let ramadanInterval = null;
+
+function startRamadanVisual(endAt) {
+  if (currentGlobalEvent && currentGlobalEvent !== 'ramadan') return;
+  currentGlobalEvent = 'ramadan';
+  if (ramadanInterval) return;
+  stopAllVisuals();
+  document.body.classList.add('ramadan-bg');
+  ramadanInterval = setInterval(() => {
+    if (Date.now() >= endAt) {
+      clearInterval(ramadanInterval);
+      ramadanInterval = null;
+      document.body.classList.remove('ramadan-bg');
+      return;
+    }
+
+    const light = document.createElement('div');
+    light.className = 'ramadan-light';
+    light.style.left = Math.random() * 100 + '%';
+    light.style.top = Math.random() * 100 + '%';
+    document.body.appendChild(light);
+
+    setTimeout(() => light.remove(), 2000);
+  }, 300);
+}
+let sakuraInterval = null;
+
+function startSakuraVisual(endAt) {
+  if (currentGlobalEvent && currentGlobalEvent !== 'sakura') return;
+  currentGlobalEvent = 'sakura';
+
+  if (sakuraInterval) return;
+
+  stopAllVisuals();
+  document.body.classList.add('sakura-bg');
+
+  sakuraInterval = setInterval(() => {
+    if (Date.now() >= endAt) {
+      clearInterval(sakuraInterval);
+      sakuraInterval = null;
+      document.body.classList.remove('sakura-bg');
+      return;
+    }
+
+    const petal = document.createElement('div');
+    petal.className = 'sakura-petal';
+    petal.textContent = '🌸';
+    petal.style.left = Math.random() * 100 + '%';
+
+    document.body.appendChild(petal);
+
+    setTimeout(() => petal.remove(), 6000);
+  }, 300);
+}
+
+let nyanInterval = null;
+
+function startNyanVisual(endAt) {
+  if (currentGlobalEvent && currentGlobalEvent !== 'nyan') return;
+  currentGlobalEvent = 'nyan';
+
+  if (nyanInterval) return;
+
+  stopAllVisuals();
+
+  document.body.classList.add('nyan-bg'); // 🌈 фон
+
+  nyanInterval = setInterval(() => {
+    if (Date.now() >= endAt) {
+      clearInterval(nyanInterval);
+      nyanInterval = null;
+      document.body.classList.remove('nyan-bg'); // убираем фон
+      return;
+    }
+
+    const cat = document.createElement('div');
+    cat.textContent = '🐱🌈';
+    cat.style.cssText = `
+      position:fixed;
+      left:-100px;
+      top:${Math.random() * 80}%;
+      font-size:30px;
+      z-index:99999;
+      transition: left 4s linear;
+    `;
+
+    document.body.appendChild(cat);
+
+    setTimeout(() => {
+      cat.style.left = '110%';
+    }, 50);
+
+    setTimeout(() => cat.remove(), 4000);
+  }, 800);
+}
+
+let birthdayInterval = null;
+
+function startBirthdayVisual(endAt) {
+  if (currentGlobalEvent && currentGlobalEvent !== 'birthday') return;
+  currentGlobalEvent = 'birthday';
+  if (birthdayInterval) return;
+  stopAllVisuals();
+  document.body.classList.add('birthday-bg');
+
+  const flash = document.createElement('div');
+  flash.className = 'flash-screen';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 500);
+
+  const left = document.createElement('div');
+  left.className = 'birthday-text left-text';
+  left.textContent = '🎉 HAPPY BIRTHDAY 🎉';
+
+  const right = document.createElement('div');
+  right.className = 'birthday-text right-text';
+  right.textContent = '🎉 HAPPY BIRTHDAY 🎉';
+
+  document.body.appendChild(left);
+  document.body.appendChild(right);
+
+  birthdayInterval = setInterval(() => {
+    if (Date.now() >= endAt) {
+      clearInterval(birthdayInterval);
+      document.body.classList.remove('birthday-bg');
+      left.remove();
+      right.remove();
+      return;
+    }
+
+    firework(); // используем как фейерверк
+  }, 400);
+}
+
+function startSnapEvent() {
+  stopAllVisuals();
+
+  document.body.classList.add('glitch');
+
+  setTimeout(() => {
+    document.body.classList.remove('glitch');
+
+    const snap = document.createElement('div');
+    snap.style.cssText = `
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:90px;
+      z-index:99999;
+    `;
+    snap.textContent = '👌';
+    document.body.appendChild(snap);
+
+    setTimeout(() => {
+      const gray = document.createElement('div');
+      gray.className = 'gray-screen-overlay';
+      document.body.appendChild(gray);
+
+      snap.remove();
+
+      setTimeout(() => {
+        gray.remove();
+
+        // запускаем мощные ивенты
+        adminStartDisco();
+        adminStartLuck(4);
+        adminStartMutationSurge();
+      }, 1000);
+    }, 1000);
+  }, 2000);
+}
+
+function stopAllVisuals() {
+  // Убираем фоны
+  document.body.classList.remove('ramadan-bg');
+  document.body.classList.remove('birthday-bg');
+  document.body.classList.remove('disco');
+  document.body.classList.remove('glitch');
+  currentGlobalEvent = null;
+
+  // Останавливаем интервалы
+  if (ramadanInterval) {
+    clearInterval(ramadanInterval);
+    ramadanInterval = null;
+  }
+
+  if (birthdayInterval) {
+    clearInterval(birthdayInterval);
+    birthdayInterval = null;
+  }
+
+  if (luckyRainInterval) {
+    clearInterval(luckyRainInterval);
+    luckyRainInterval = null;
+  }
+
+  // Удаляем тексты birthday
+  document.querySelectorAll('.birthday-text').forEach((e) => e.remove());
+
+  // Удаляем вспышки
+  document.querySelectorAll('.flash-screen').forEach((e) => e.remove());
+
+  // Удаляем серый экран snap
+  document.querySelectorAll('.gray-screen-overlay').forEach((e) => e.remove());
+}
+
+function createEndFlash() {
+  const flash = document.createElement('div');
+  flash.style.cssText = `
+    position:fixed;
+    inset:0;
+    background:white;
+    opacity:0.8;
+    z-index:99999;
+    pointer-events:none;
+  `;
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 200);
+}
+const canvas = document.createElement('canvas');
+canvas.style.position = 'fixed';
+canvas.style.inset = '0';
+canvas.style.pointerEvents = 'none';
+canvas.style.zIndex = '9998';
+document.body.appendChild(canvas);
+
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function firework() {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height * 0.5;
+  const particles = [];
+
+  for (let i = 0; i < 40; i++) {
+    particles.push({
+      x,
+      y,
+      dx: (Math.random() - 0.5) * 6,
+      dy: (Math.random() - 0.5) * 6,
+      life: 60,
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p) => {
+      p.x += p.dx;
+      p.y += p.dy;
+      p.life--;
+      ctx.fillStyle = `hsl(${Math.random() * 360},100%,50%)`;
+      ctx.fillRect(p.x, p.y, 3, 3);
+    });
+
+    if (particles[0].life > 0) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  animate();
+}
+function updateLeaderboard() {
+  if (!playerId) return;
+
+  db.ref('leaderboard/' + playerId).set({
+    money: money,
+    rebirths: rebirths || 0,
+  });
+}
+
+let leaderboardMode = 'money';
+
+function setLeaderboardMode(mode) {
+  leaderboardMode = mode;
+  loadLeaderboard();
+}
+function loadLeaderboard() {
+  firebase
+    .database()
+    .ref('leaderboard')
+    .on('value', (snapshot) => {
+      let data = snapshot.val();
+      if (!data) return;
+
+      let arr = Object.entries(data);
+
+      arr.sort((a, b) => {
+        if (leaderboardMode === 'money') {
+          return (b[1].money || 0) - (a[1].money || 0);
+        } else {
+          return (b[1].rebirths || 0) - (a[1].rebirths || 0);
+        }
+      });
+
+      arr = arr.slice(0, 10);
+
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+
+      arr.forEach((player, index) => {
+        let id = player[0];
+        let shortId = id.length > 10 ? id.slice(0, 10) + '...' : id;
+        let value =
+          leaderboardMode === 'money'
+            ? player[1].money || 0
+            : player[1].rebirths || 0;
+
+        let icon = leaderboardMode === 'money' ? '💰' : '🔁';
+
+        let medal = '';
+        if (index === 0) medal = '🥇';
+        if (index === 1) medal = '🥈';
+        if (index === 2) medal = '🥉';
+
+        let div = document.createElement('div');
+        div.textContent = `${medal} ${index + 1}. ${shortId} — ${formatMoney(value)} ${icon}`;
+
+        if (id === playerId) {
+          div.style.color = 'gold';
+        }
+
+        list.appendChild(div);
+      });
+    });
+}
+
+let jumpCoins = parseInt(localStorage.getItem('jumpCoins')) || 0;
+
+function saveJump() {
+  localStorage.setItem('jumpCoins', jumpCoins);
+  document.getElementById('jumpCoins').textContent = jumpCoins;
+}
+
+function toggleCollabShop() {
+  const shop = document.getElementById('collabShop');
+  shop.style.display = shop.style.display === 'block' ? 'none' : 'block';
+}
+
+function openJumpPack() {
+  if (jumpCoins < 50000) return alert('Недостаточно 🌀');
+
+  jumpCoins -= 50000;
+  saveJump();
+
+  alert('🎁 Ты получил награду!');
+}
+
+function openJumpPack2() {
+  if (jumpCoins < 150000) return alert('Недостаточно 🌀');
+
+  jumpCoins -= 150000;
+  saveJump();
+
+  alert('🔥 Топ награда!');
+}
+
+function supportDev() {
+  window.open('https://www.donationalerts.com/r/aunxzz', '_blank');
+}
+
+function adminInstantGrow() {
+  db.ref('events/instantGrow').set({
+    time: Date.now(),
+  });
+}
+
+let lastInstantGrow = 0;
+db.ref('events/instantGrow').on('value', (snap) => {
+  const data = snap.val();
+  if (!data) return;
+
+  if (data.time < sessionJoinTime) return;
+
+  runInstantGrow();
+});
+function runInstantGrow() {
+  let changed = false;
+
+  for (let i = 0; i < garden.length; i++) {
+    const plant = garden[i];
+
+    if (plant && !plant.ready) {
+      plant.ready = true;
+      plant.start = Date.now() - plant.time;
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    updateUI();
+    save();
+  }
+}
+let currentEventMusic = null;
+
+function playEventMusic(src, eventName) {
+  const music = document.getElementById('eventMusic');
+  if (!music) return;
+
+  // если уже играет этот же ивент — не перезапускаем
+  if (currentEventMusic === eventName) return;
+
+  currentEventMusic = eventName;
+
+  music.pause();
+  music.src = src;
+  music.currentTime = 0;
+  music.play();
+}
+
+function stopEventMusic(eventName) {
+  const music = document.getElementById('eventMusic');
+
+  // стопаем только если это текущий ивент
+  if (currentEventMusic === eventName) {
+    music.pause();
+    music.src = '';
+    currentEventMusic = null;
+  }
+}
+
+function formatMoney(num) {
+  if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+  if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B'; // Bill
+  if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+  return num.toString();
+}
+
+document.addEventListener('keydown', function (e) {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+    (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+    (e.ctrlKey && e.key === 'U')
+  ) {
+    e.preventDefault();
+    alert('Консоль заблокирована 🚫');
+  }
+});
+
+function unlockPlant(plantName) {
+  if (!discoveredPlants.includes(plantName)) {
+    discoveredPlants.push(plantName);
+    localStorage.setItem('discoveredPlants', JSON.stringify(discoveredPlants));
+    // Можно добавить уведомление: "Новая запись в индексе!"
+    console.log(`Новое растение открыто: ${plantName}`);
+  }
+}
+
+function toggleIndex() {
+  const indexDiv = document.getElementById('plantIndex');
+  indexDiv.classList.toggle('hidden');
+  if (!indexDiv.classList.contains('hidden')) {
+    renderIndex();
+  }
+}
+
+function renderIndex() {
+  const grid = document.getElementById('indexGrid');
+  grid.innerHTML = '';
+
+  seeds.forEach((seed) => {
+    const isDiscovered = discoveredPlants.includes(seed.name);
+    const card = document.createElement('div');
+    card.className = `index-card ${isDiscovered ? '' : 'locked'}`;
+
+    card.innerHTML = `
+            <div class="index-emoji">${isDiscovered ? seed.emoji : '❓'}</div>
+            <div class="index-info">
+                <h3>${isDiscovered ? seed.name : '???'}</h3>
+                <p>Редкость: ${isDiscovered ? seed.rarity : '???'}</p>
+                <p>Время роста: ${isDiscovered ? seed.growTime / 1000 + 'с' : '???'}</p>
+            </div>
+        `;
+    grid.appendChild(card);
+  });
+}
+// Jumper Pack
+function openJumperPack() {
+  if (jumpCoins < 75000) {
+    alert('Мало синих шаров! 🔵');
+    return;
+  }
+  jumpCoins -= 75000;
+  updateUI();
+  save();
+
+  const jumpItems = [
+    { emoji: '🔵', name: 'Синий мяч', growTime: 5000, price: 2000, rarity: 'обычное' },
+    { emoji: '🎾', name: 'Теннисный шар', growTime: 7000, price: 5000, rarity: 'редкое' },
+    { emoji: '🏐', name: 'Волейбольный шар', growTime: 10000, price: 15000, rarity: 'эпическое' },
+    { emoji: '🔮', name: 'Стеклянный шар', growTime: 15000, price: 40000, rarity: 'мифическое' },
+  ];
+
+  const plant = jumpItems[Math.floor(Math.random() * jumpItems.length)];
+  alert(`📦 Вы открыли BALL PACK!\nВыпал: ${plant.name}`);
+  placeInGarden(plant);
+}
+
+// Jumper Pro Pack
+function openJumperProPack() {
+  if (jumpCoins < 200000) {
+    alert('Мало синих шаров для PRO! 🔵');
+    return;
+  }
+  jumpCoins -= 200000;
+  saveJump();
+
+  const proItems = [
+    { emoji: '💠', name: 'Алмазный шар', growTime: 20000, price: 8000000, rarity: 'мифическое' },
+    { emoji: '🪐', name: 'Шар Сатурн', growTime: 30000, price: 25000000, rarity: 'мифическое' },
+    { emoji: '🧿', name: 'Глаз Прыгун', growTime: 40000, price: 999999999, rarity: 'призматическое' },
+  ];
+
+  let roll = Math.random();
+  let plant = (roll < 0.55) ? proItems[0] : (roll < 0.9) ? proItems[1] : proItems[2];
+
+  alert(`🔥 Вы открыли PRO PACK!\nВыпал: ${plant.name}`);
+  placeInGarden(plant);
+}
+
+function placeInGarden(plant) {
+  const freeIndex = garden.findIndex((g) => !g);
+  if (freeIndex !== -1) {
+    garden[freeIndex] = { ...plant, start: Date.now(), time: plant.growTime, ready: false };
+    growPlant(freeIndex);
+    updateUI();
+    save();
+  } else {
+    alert('Нет места! 🛑');
+  }
+}
+
+// Переменная и сохранение
+if (typeof jumpCoins === 'undefined') {
+    window.jumpCoins = parseInt(localStorage.getItem('jumpCoins')) || 0;
+}
+
+function saveJump() {
+  localStorage.setItem('jumpCoins', jumpCoins);
+  const el = document.getElementById('jumpCoins');
+  if(el) el.textContent = Math.floor(jumpCoins);
+}
+
+function toggleJumpShop() {
+  const shop = document.getElementById('jumpShop');
+  shop.style.display = (shop.style.display === 'block') ? 'none' : 'block';
+}
+
+// AFK ДОХОД: Дает 15 коинов каждые 4 секунды
+setInterval(() => {
+    jumpCoins += 100;
+    saveJump();
+}, 4000);
+
+saveJump();
+
+// Проверка: заходил ли пользователь раньше
+window.addEventListener('load', function() {
+    const hasSeenWelcome = localStorage.getItem('jumpEventSeen');
+    
+    if (!hasSeenWelcome) {
+        document.getElementById('jumpWelcomeModal').style.display = 'flex';
+    }
+});
+
+function closeWelcome() {
+    // Скрываем окно
+    document.getElementById('jumpWelcomeModal').style.display = 'none';
+    // Сохраняем в память, что пользователь его уже видел
+    localStorage.setItem('jumpEventSeen', 'true');
+}
+
+// Открыть/Закрыть окно
+function toggleSettings() {
+    const box = document.getElementById('settingsBox');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+// ЭКСПОРТ (Создать код)
+function exportGame() {
+    try {
+        // Собираем все данные из localStorage в одну строку
+        let allData = JSON.stringify(localStorage);
+        // Кодируем в Base64 для удобства копирования
+        let code = btoa(unescape(encodeURIComponent(allData)));
+        
+        document.getElementById('dataInput').value = code;
+        document.getElementById('dataInput').select();
+        alert("Код сохранения создан! Скопируйте его из текстового поля.");
+    } catch (e) {
+        alert("Ошибка при создании кода.");
+    }
+}
+
+// ИМПОРТ (Загрузить код)
+function importGame() {
+    let code = document.getElementById('dataInput').value.trim();
+    if (!code) return alert("Сначала вставьте код в поле!");
+
+    if (confirm("Внимание! Текущий прогресс будет заменен. Продолжить?")) {
+        try {
+            // Декодируем и парсим данные
+            let decoded = decodeURIComponent(escape(atob(code)));
+            let data = JSON.parse(decoded);
+
+            // Очищаем текущую память и записываем данные из кода
+            localStorage.clear();
+            for (let key in data) {
+                localStorage.setItem(key, data[key]);
+            }
+
+            alert("Данные успешно загружены! Игра перезагрузится.");
+            location.reload(); 
+        } catch (err) {
+            alert("Ошибка! Неверный код сохранения.");
+        }
+    }
+}
+loadLeaderboard();
+animateMoney();
+renderSeeds();
+updateUI();
+loadGrowth();
+updateUpgradeButtons();
+
+  </script>
+</body>
+</html>
